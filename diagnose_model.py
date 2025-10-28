@@ -32,7 +32,7 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
         batch_size=batch_size,
         num_workers=num_workers,
         image_size=512,
-        num_classes=34
+        num_classes=256
     )
     
     # Analyze class distribution
@@ -59,7 +59,7 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
     for cls, count in sorted_classes:
         percentage = (count / total_pixels) * 100
         frequency = count / len(train_loader.dataset)
-        class_weights[cls] = total_pixels / (34 * count)  # Inverse frequency
+        class_weights[cls] = total_pixels / (256 * count)  # Inverse frequency
         print(f"{cls:<10} {count:<15,} {percentage:<14.4f}% {frequency:<15.1f}")
     
     # Identify severely imbalanced classes
@@ -79,7 +79,7 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
         print(f"   Class {percentages[0][0]} dominates with {max_pct:.1f}% of pixels")
     
     # Check for missing classes
-    missing_classes = set(range(34)) - set(class_counts.keys())
+    missing_classes = set(range(256)) - set(class_counts.keys())
     if missing_classes:
         print(f"\n⚠️  WARNING: Missing classes in training data: {sorted(missing_classes)}")
     
@@ -91,7 +91,7 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
     max_weight = max(class_weights.values())
     normalized_weights = {cls: min(w/max_weight * 10, 100) for cls, w in class_weights.items()}
     
-    weights_list = [normalized_weights.get(i, 1.0) for i in range(34)]
+    weights_list = [normalized_weights.get(i, 1.0) for i in range(256)]
     
     print("Paste this in train.py:")
     print(f"\nclass_weights = torch.tensor({weights_list})")
@@ -115,14 +115,14 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
     invalid_count = 0
     for batch in train_loader:
         masks = batch['mask'].numpy()
-        if masks.max() > 33 or masks.min() < 0:
+        if masks.max() > 255 or masks.min() < 0:
             invalid_count += 1
     
     if invalid_count > 0:
         print(f"⚠️  WARNING: {invalid_count} batches have invalid mask values!")
-        print("   Mask values should be in range [0, 33]")
+        print("   Mask values should be in range [0, 255]")
     else:
-        print("✓ All masks have valid values [0, 33]")
+        print("✓ All masks have valid values [0, 255]")
     
     # Check image-mask alignment
     print("\n5. Checking Image-Mask Alignment...")

@@ -25,7 +25,7 @@ from src.utils.logging_config import setup_logging
 logger = setup_logging()
 
 
-# CubiCasa5K color map for visualization (34 classes)
+# CubiCasa5K color map for visualization (256 classes)
 COLOR_MAP = {
     0: [0, 0, 0],        # Background
     1: [192, 192, 192],  # Outdoor
@@ -43,11 +43,14 @@ COLOR_MAP = {
     13: [64, 0, 128],    # Exterior door
     14: [192, 0, 128],   # Window
     15: [64, 128, 128],  # Other rooms
+    255: [255, 255, 255],  # Background/White
 }
 
 # Fill remaining classes with random colors
-for i in range(16, 34):
-    COLOR_MAP[i] = list(np.random.randint(0, 255, 3))
+np.random.seed(42)  # For consistency
+for i in range(16, 256):
+    if i not in COLOR_MAP:
+        COLOR_MAP[i] = list(np.random.randint(0, 255, 3))
 
 
 def load_model(checkpoint_path: str, device: torch.device):

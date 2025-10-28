@@ -148,7 +148,7 @@ def main():
         # Model - Slightly smaller for better convergence
         'img_size': 512,
         'patch_size': 32,
-        'n_classes': 34,
+        'n_classes': 256,
         'embed_dim': 384,
         'n_encoder_layers': 12,
         'n_decoder_layers': 3,
