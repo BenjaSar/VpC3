@@ -1,0 +1,8 @@
+-r base.txt
+fastapi==0.100.0
+uvicorn==0.23.2
+python-multipart==0.0.6
+pydantic-settings==2.0.2
+torch-serve==0.7.1
+onnx==1.14.1
+onnxruntime==1.15.1

@@ -1,0 +1,308 @@
+# ==============================================================================
+# Python
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==============================================================================
+# Virtual Environments
+# ==============================================================================
+venv/
+ENV/
+env/
+.venv/
+floorplan_vit/
+.conda/
+*.virtualenv
+
+# ==============================================================================
+# Jupyter Notebook
+# ==============================================================================
+.ipynb_checkpoints/
+*.ipynb
+jupyter_notebook_config.py
+
+# ==============================================================================
+# PyCharm
+# ==============================================================================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ==============================================================================
+# VS Code
+# ==============================================================================
+.vscode/
+*.code-workspace
+.history/
+
+# ==============================================================================
+# Dataset Files (IMPORTANT - Exclude large image datasets)
+# ==============================================================================
+
+# CubiCasa5K dataset directories
+data/cubicasa5k/
+data/cubicasa5k_raw/
+data/cubicasa5k_coco/
+data/cubicasa5k_converted/
+
+# Processed data (images and annotations)
+data/processed/images/
+data/processed/annotations/
+
+# Any other dataset directories
+data/*/images/
+data/*/annotations/
+data/processed/
+data/*/*.png
+data/*/*.jpg
+data/*/*.jpeg
+data/*/*.svg
+
+# Dataset archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Keep only Python files and metadata in data directory
+!data/*.py
+!data/*.json
+!data/*.yaml
+!data/*.txt
+!data/*.md
+
+# ==============================================================================
+# Model Files (Large checkpoints)
+# ==============================================================================
+models/checkpoints/*.pth
+models/checkpoints/*.pt
+models/checkpoints/*.ckpt
+models/*.pth
+models/*.pt
+*.safetensors
+
+# Keep config files in models
+!models/checkpoints/config.json
+!models/checkpoints/training_history.json
+
+# ==============================================================================
+# Training Outputs
+# ==============================================================================
+
+# Logs
+logs/*.log
+*.log
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Weights & Biases
+wandb/
+
+# TensorBoard
+runs/
+tensorboard/
+
+# Optuna databases
+*.db
+*.sqlite
+
+# ==============================================================================
+# EDA Outputs
+# ==============================================================================
+eda_output*/
+eda_results/
+eda_analysis/
+
+# ==============================================================================
+# Inference Results
+# ==============================================================================
+inference_results/visualizations/*.png
+inference_results/visualizations/*.jpg
+inference_results/*.png
+inference_results/*.jpg
+
+# Keep metrics JSON files
+!inference_results/*.json
+!inference_results/test_metrics.json
+
+# ==============================================================================
+# Temporary Files
+# ==============================================================================
+*.tmp
+*.temp
+tmp/
+temp/
+.cache/
+.pytest_cache/
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+
+# ==============================================================================
+# OS Files
+# ==============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.nfs*
+
+# ==============================================================================
+# Environment Files
+# ==============================================================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# Keep example env file
+!.env.example
+
+# ==============================================================================
+# Data & Large Files
+# ==============================================================================
+
+# Large binary files
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# Compressed files
+*.gz
+*.bz2
+*.xz
+
+# ==============================================================================
+# Documentation Build
+# ==============================================================================
+docs/_build/
+docs/_static/
+docs/_templates/
+site/
+
+# ==============================================================================
+# Testing
+# ==============================================================================
+.tox/
+.nox/
+htmlcov/
+.pytest_cache/
+.coverage.*
+coverage/
+
+# ==============================================================================
+# Various
+# ==============================================================================
+/varios
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*~
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration overrides (keep templates only)
+configs/local_*.yaml
+configs/override_*.yaml
+
+# ==============================================================================
+# Keep Important Files
+# ==============================================================================
+
+# Keep README and documentation
+!README.md
+!LICENSE
+!CONTRIBUTING.md
+!CHANGELOG.md
+
+# Keep requirements files
+!requirements/*.txt
+!requirements.txt
+!environment.yml
+
+# Keep configuration templates
+!configs/config.yaml
+!.env.example
+
+# Keep example images (small test images)
+!test_img.png
+!test_image.png
+!example*.png
+!sample*.png
+
+# Keep Python source code
+!*.py
+
+# Keep documentation
+!*.md
+!docs/**/*.md
+
+# ==============================================================================
+# Project-Specific Exclusions
+# ==============================================================================
+
+# Exclude visualization outputs (can be regenerated)
+dataloader_visualization.png
+*.visualization.png
+
+# Exclude large output directories but keep structure
+# (directories will be created automatically by scripts)
