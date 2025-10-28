@@ -75,13 +75,13 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
     print(f"Imbalance ratio: {max_pct/min_pct:.2f}x")
     
     if max_pct > 50:
-        print("⚠️  WARNING: Severe class imbalance detected!")
+        print("[WARNING] Severe class imbalance detected!")
         print(f"   Class {percentages[0][0]} dominates with {max_pct:.1f}% of pixels")
     
     # Check for missing classes
     missing_classes = set(range(256)) - set(class_counts.keys())
     if missing_classes:
-        print(f"\n⚠️  WARNING: Missing classes in training data: {sorted(missing_classes)}")
+        print(f"\n[WARNING] Missing classes in training data: {sorted(missing_classes)}")
     
     # Calculate recommended class weights
     print("\n3. Recommended Class Weights:")
@@ -106,7 +106,7 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
             'recommended_weights': weights_list
         }, f, indent=2)
     
-    print("\n✓ Class weights saved to: class_weights.json")
+    print("\n[OK] Class weights saved to: class_weights.json")
     
     # Check mask value ranges
     print("\n4. Checking Mask Value Ranges...")
@@ -119,10 +119,10 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
             invalid_count += 1
     
     if invalid_count > 0:
-        print(f"⚠️  WARNING: {invalid_count} batches have invalid mask values!")
+        print(f"[WARNING] {invalid_count} batches have invalid mask values!")
         print("   Mask values should be in range [0, 255]")
     else:
-        print("✓ All masks have valid values [0, 255]")
+        print("[OK] All masks have valid values [0, 255]")
     
     # Check image-mask alignment
     print("\n5. Checking Image-Mask Alignment...")
@@ -136,9 +136,9 @@ def analyze_dataset(images_dir, masks_dir, batch_size=8, num_workers=0):
     print(f"Mask batch shape: {masks.shape}")
     
     if images.shape[-2:] != masks.shape[-2:]:
-        print("⚠️  WARNING: Image and mask dimensions don't match!")
+        print("[WARNING] Image and mask dimensions don't match!")
     else:
-        print("✓ Image and mask dimensions match")
+        print("[OK] Image and mask dimensions match")
     
     return class_weights
 
@@ -151,7 +151,7 @@ def analyze_model_predictions(checkpoint_path='models/checkpoints/best_model.pth
     print("="*80)
     
     if not Path(checkpoint_path).exists():
-        print(f"⚠️  Checkpoint not found: {checkpoint_path}")
+        print(f"[WARNING] Checkpoint not found: {checkpoint_path}")
         return
     
     # Load checkpoint
@@ -173,7 +173,7 @@ def analyze_model_predictions(checkpoint_path='models/checkpoints/best_model.pth
                 
                 improvement = history['val_iou'][-1] - history['val_iou'][0]
                 if improvement < 0.05:
-                    print(f"\n⚠️  WARNING: Model barely improved (Δ={improvement:.4f})")
+                    print(f"\n[WARNING] Model barely improved (Delta={improvement:.4f})")
                     print("   This suggests:")
                     print("   - Learning rate might be too low")
                     print("   - Model is stuck in local minimum")
@@ -205,7 +205,7 @@ def main():
     print("""
 Based on the analysis, here are the recommended fixes:
 
-1. ⚠️  CRITICAL: Add class weights to loss function
+1. [CRITICAL] Add class weights to loss function
    - Copy the class_weights code from above into train.py
    - This will force the model to learn minority classes
 

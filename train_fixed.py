@@ -231,7 +231,7 @@ def main():
             weight=class_weights,
             label_smoothing=CONFIG['label_smoothing']
         )
-        logger.info("✓ Using weighted loss with class weights")
+        logger.info("[OK] Using weighted loss with class weights")
     else:
         criterion = nn.CrossEntropyLoss()
         logger.info("Using standard CrossEntropyLoss")
@@ -325,7 +325,7 @@ def main():
                 'active_classes': active_classes,
                 'config': CONFIG
             }, best_model_path)
-            logger.info(f"✓ Saved best model (IoU: {val_iou:.4f}, Active: {active_classes})")
+            logger.info(f"[OK] Saved best model (IoU: {val_iou:.4f}, Active: {active_classes})")
         
         # Save checkpoint periodically
         if (epoch + 1) % CONFIG['save_frequency'] == 0:
