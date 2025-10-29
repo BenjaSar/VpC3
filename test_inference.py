@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import json
 
-from train import ViTSegmentation
+from train_v1 import ViTSegmentation
 from data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
 
