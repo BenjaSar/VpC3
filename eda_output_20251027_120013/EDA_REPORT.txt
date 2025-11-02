@@ -1,0 +1,94 @@
+================================================================================
+           FLOOR PLAN DATASET EXPLORATORY DATA ANALYSIS (EDA) REPORT            
+================================================================================
+
+ANALYSIS SUMMARY
+--------------------------------------------------------------------------------
+Analysis Date: 2025-10-27T12:05:18.576802
+Dataset Type: cubicasa5k
+Total Images: 992
+Total Annotations: 990
+Number of Classes: 256
+Class Imbalance Ratio: 14666.31:1
+Quality Status: EXCELLENT
+Quality Score: 99.80%
+Data Completeness: 99.80%
+Image-Annotation Match: 99.80%
+
+IMAGE STATISTICS
+--------------------------------------------------------------------------------
+Total Images: 992
+Width Range: 202 - 4345 pixels
+Width Mean: 929.44 ± 677.54 pixels
+Height Range: 196 - 4128 pixels
+Height Mean: 806.12 ± 568.96 pixels
+Aspect Ratio Range: 0.35 - 3.14
+Aspect Ratio Mean: 1.20 ± 0.40
+Total Storage: 0.22 GB
+
+CLASS DISTRIBUTION
+--------------------------------------------------------------------------------
+Number of Classes: 256
+
+Top 10 Most Common Classes:
+  Class 0: 620,986,416 pixels (57.82%) in 990 images
+  Class 255: 423,436,628 pixels (39.43%) in 989 images
+  Class 241: 9,090,808 pixels (0.85%) in 988 images
+  Class 238: 283,443 pixels (0.03%) in 989 images
+  Class 234: 206,661 pixels (0.02%) in 988 images
+  Class 232: 188,401 pixels (0.02%) in 988 images
+  Class 247: 186,736 pixels (0.02%) in 988 images
+  Class 251: 185,275 pixels (0.02%) in 988 images
+  Class 221: 182,641 pixels (0.02%) in 988 images
+  Class 204: 180,873 pixels (0.02%) in 988 images
+
+DATA QUALITY ASSESSMENT
+--------------------------------------------------------------------------------
+Status: EXCELLENT
+Quality Score: 99.80%
+Data Completeness: 99.80%
+Image-Annotation Match: 99.80%
+
+EDA RECOMMENDATIONS
+--------------------------------------------------------------------------------
+
+Based on the analysis, here are recommendations for model training:
+
+1. INPUT IMAGE SIZE:
+   Recommended input size: 928x800
+   (Divisible by 32 for patch-based models)
+
+2. CLASS IMBALANCE HANDLING:
+   ⚠ High class imbalance detected (14666.3:1)
+   → Use weighted loss functions (Focal Loss, Weighted Cross-Entropy)
+   → Consider class balancing augmentation
+
+3. DATA AUGMENTATION:
+   Recommended augmentations for floor plans:
+   • Rotation (±15 degrees)
+   • Horizontal/Vertical Flips
+   • Elastic Deformation
+   • Random Crop and Pad
+   • Brightness/Contrast Adjustment
+
+4. BATCH SIZE & TRAINING:
+   For GTX 1650 (4GB VRAM):
+   • Recommended batch size: 8-16
+   • Use mixed precision training (FP16)
+   • Enable gradient checkpointing
+   • Use learning rate: 1e-4 to 5e-4
+
+5. DATA QUALITY:
+   Current quality score: 99.80%
+   ✓ Excellent data quality - proceed with training
+
+6. MODEL SELECTION:
+   Based on your configuration (GTX 1650 - 4GB VRAM):
+   • RECOMMENDED: ViT-Small + Lightweight Decoder
+   • Expected mIoU: 82-87%
+   • Inference time: 300-500ms per image
+   • Training time: 12-24 hours
+
+================================================================================
+                                 END OF REPORT                                  
+================================================================================

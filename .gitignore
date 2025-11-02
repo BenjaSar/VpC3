@@ -99,16 +99,27 @@ data/*/*.svg
 # ==============================================================================
 # Model Files (Large checkpoints)
 # ==============================================================================
+# Global exclusion of all model checkpoint files
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+
+# Specific model directories (explicit for clarity)
 models/checkpoints/*.pth
 models/checkpoints/*.pt
 models/checkpoints/*.ckpt
+models/checkpoints_fixed/*.pth
+models/checkpoints_fixed/*.pt
+models/checkpoints_fixed/*.ckpt
 models/*.pth
 models/*.pt
-*.safetensors
 
 # Keep config files in models
 !models/checkpoints/config.json
 !models/checkpoints/training_history.json
+!models/checkpoints_fixed/config.json
+!models/checkpoints_fixed/training_history.json
 
 # ==============================================================================
 # Training Outputs
@@ -136,7 +147,7 @@ tensorboard/
 # ==============================================================================
 # EDA Outputs
 # ==============================================================================
-eda_output*/
+!eda_output*/
 eda_results/
 eda_analysis/
 
