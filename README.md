@@ -74,7 +74,7 @@ Exterior Door, Window, and more...
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/floorplan-vit-classifier.git
+git clone https://github.com/BenjaSar/floorplan-vit-classifier.git
 cd floorplan-vit-classifier
 
 # Create conda environment
@@ -515,7 +515,7 @@ If you use this code in your research, please cite:
   title={Floor Plan Vision Transformer Classifier},
   author={Grupo 3 VpC},
   year={2025},
-  url={https://github.com/yourusername/floorplan-vit-classifier}
+  url={https://github.com/BenjaSar/floorplan-vit-classifier}
 }
 ```
 
@@ -540,8 +540,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions or issues:
 
-- **GitHub Issues**: [Create an issue](https://github.com/yourusername/floorplan-vit-classifier/issues)
-- **Discussion**: [GitHub Discussions](https://github.com/yourusername/floorplan-vit-classifier/discussions)
+- **GitHub Issues**: [Create an issue](https://github.com/BenjaSar/floorplan-vit-classifier/issues)
+- **Discussion**: [GitHub Discussions](https://github.com/BenjaSar/floorplan-vit-classifier/discussions)
 
 ## 🗺️ Roadmap
 
