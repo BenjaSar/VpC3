@@ -23,7 +23,7 @@ from collections import Counter
 # Import project modules
 from data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
-from train import ViTSegmentation, calculate_iou, train_epoch, validate
+from train_v1 import ViTSegmentation, calculate_iou, train_epoch, validate
 
 logger = setup_logging()
 

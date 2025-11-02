@@ -149,14 +149,6 @@ python run_preprocessing.py
 python run_dataset.py
 ```
 
-### Alternative Dataset Sources
-
-See [DATASET_DOWNLOAD_GUIDE.md](varios/DATASET_DOWNLOAD_GUIDE.md) for:
-- Roboflow datasets
-- LIFULL HOME's dataset
-- R-FID dataset
-- Custom dataset creation
-
 ## 🎯 Usage
 
 ### 1. Exploratory Data Analysis (EDA)
@@ -315,9 +307,6 @@ floorplan-vit-classifier/
 │   ├── base.txt                 # Core dependencies
 │   ├── dev.txt                  # Development dependencies
 │   └── prod.txt                 # Production dependencies
-├── varios/
-│   ├── DATASET_DOWNLOAD_GUIDE.md
-│   └── TROUBLESHOOTING_LOW_IOU.md
 ├── train.py                     # Training script
 ├── test_inference.py            # Inference script
 ├── run_preprocessing.py         # Preprocessing pipeline
