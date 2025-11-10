@@ -1,0 +1,174 @@
+# Enhanced Configuration for Floor Plan Segmentation
+# Optimized for class imbalance and boundary segmentation
+
+# Model Configuration
+model:
+  name: UnetPlusPlus
+  encoder: efficientnet-b4
+  pretrained_weights: imagenet
+  num_classes: 34  # Semantic classes from CubiCasa5K
+
+# Data Configuration
+data:
+  train_images: data/processed/images
+  train_masks: data/processed/annotations
+  val_images: data/processed/images
+  val_masks: data/processed/annotations
+  class_mapping_file: class_mapping_256_to_34.json
+  image_size: 512
+  ignore_index: 255
+
+# Loss Function Configuration
+loss:
+  # Combined loss: Focal + Dice + CrossEntropy
+  focal_weight: 0.0      # Weight for focal loss component (disabled due to CUDA issues)
+  dice_weight: 0.0       # Weight for dice loss component (disabled to save memory)
+  ce_weight: 1.0         # Weight for cross-entropy component
+  
+  # Focal Loss parameters
+  focal_alpha: 0.25      # Balance factor for focal loss
+  focal_gamma: 2.0       # Focusing parameter (higher = more focus on hard examples)
+  
+  # Class weighting
+  use_class_weights: true
+  class_weight_beta: 0.999  # Beta for effective number calculation
+
+# Optimizer Configuration
+optimizer:
+  type: adamw
+  lr: 0.001              # Initial learning rate (will be modulated by scheduler)
+  weight_decay: 0.01     # L2 regularization
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+# Learning Rate Scheduler Configuration
+scheduler:
+  type: multistage       # Options: multistage, warmup_cosine, poly, cosine, step
+  
+  # Multi-stage scheduler parameters
+  warmup_epochs: 5       # Linear warmup from min_lr to max_lr
+  cosine_epochs: 70      # Cosine annealing phase
+  finetune_epochs: 25    # Fine-tuning with minimal LR
+  max_lr: 0.001          # Maximum learning rate (after warmup)
+  min_lr: 1.0e-6         # Minimum learning rate (fine-tuning)
+
+# Training Configuration
+training:
+  epochs: 50
+  batch_size: 4
+  num_workers: 2
+  save_interval: 5       # Save checkpoint every N epochs
+  save_dir: VpC3/models/checkpoints_enhanced
+  log_dir: VpC3/logs/tensorboard
+  
+  # Gradient settings
+  gradient_clip_norm: 1.0
+  gradient_monitor_interval: 50  # Log gradients every N steps
+  
+  # Mixed precision training (if available)
+  use_amp: true
+  
+  # Early stopping
+  early_stopping_patience: 15
+  early_stopping_min_delta: 0.001
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - iou
+    - dice
+    - f1
+    - precision
+    - recall
+  
+  # Per-class evaluation
+  per_class_metrics: true
+  
+  # Rare class analysis
+  rare_class_threshold: 0.01  # Classes with < 1% frequency
+  
+  # Visualization
+  save_predictions: true
+  num_vis_samples: 10
+
+# Class Names (for reporting)
+class_names:
+  0: background
+  1: kitchen
+  2: bathroom
+  3: bedroom
+  4: living_room
+  5: dining_room
+  6: hallway
+  7: stairs
+  8: garage
+  9: balcony
+  10: terrace
+  11: office
+  12: utility_room
+  13: laundry_room
+  14: storage
+  15: closet
+  16: pantry
+  17: lobby
+  18: corridor
+  19: atrium
+  20: exterior
+  21: wall
+  22: door
+  23: window
+  24: railing
+  25: bathtub
+  26: sink
+  27: toilet
+  28: shower
+  29: fireplace
+  30: washing_machine
+  31: refrigerator
+  32: oven
+  33: other
+
+# Augmentation Configuration
+augmentation:
+  train:
+    # Geometric augmentations
+    horizontal_flip: 0.5
+    vertical_flip: 0.5
+    random_rotate90: 0.5
+    elastic_transform: 0.3
+    grid_distortion: 0.3
+    optical_distortion: 0.3
+    
+    # Intensity augmentations
+    gauss_noise: 0.2
+    gaussian_blur: 0.2
+    brightness_contrast: 0.3
+    hue_saturation: 0.3
+  
+  val:
+    # Minimal augmentation for validation
+    # Only resize and normalize
+
+# Monitoring Configuration
+monitoring:
+  tensorboard: true
+  log_histograms: false  # Log parameter histograms (can be slow)
+  log_images_interval: 10  # Log sample predictions every N epochs
+  
+  # Metrics to track
+  track_metrics:
+    - train_loss
+    - val_loss
+    - train_iou
+    - val_iou
+    - val_dice
+    - val_f1
+    - learning_rate
+    - gradient_norm
+
+# Hardware Configuration
+hardware:
+  device: auto  # Options: auto, cuda, cpu
+  gpu_ids: [0]  # List of GPU IDs to use
+  distributed: false
+  mixed_precision: true

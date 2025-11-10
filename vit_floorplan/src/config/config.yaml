@@ -1,0 +1,40 @@
+# Model Configuration
+model:
+  name: "vit_base_patch16"
+  pretrained: true
+  num_classes: 12
+  image_size: 512
+  patch_size: 16
+
+# Training Configuration
+training:
+  batch_size: 16
+  epochs: 100
+  learning_rate: 1.0e-4
+  weight_decay: 1.0e-4
+  early_stopping_patience: 10
+  gradient_clip: 1.0
+  mixed_precision: true
+
+# Data Configuration
+data:
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+  num_workers: 4
+  pin_memory: true
+  
+# Augmentation
+augmentation:
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  rotation_limit: 15
+  brightness_contrast: 0.3
+
+# Paths
+paths:
+  data_dir: "data/raw"
+  processed_dir: "data/processed"
+  models_dir: "models"
+  logs_dir: "logs"
+  checkpoints_dir: "checkpoints"

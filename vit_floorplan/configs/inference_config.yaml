@@ -1,0 +1,8 @@
+model:
+  checkpoint_path: "checkpoints/best_model.pth"
+  num_classes: 12
+
+inference:
+  batch_size: 1
+  image_size: 512
+  device: "cuda"
