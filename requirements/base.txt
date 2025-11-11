@@ -37,6 +37,7 @@ segmentation-models-pytorch>=0.3.3
 mlflow>=2.12.0
 wandb>=0.17.0
 optuna>=3.5.0
+focal-loss>=0.0.7
 
 # -------------------------------
 # Data Management & Config
