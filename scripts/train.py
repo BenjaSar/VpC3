@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FIXED Training Script for ViT-Small Floor Plan Segmentation
+Training Script for ViT-Small Floor Plan Segmentation
 Addresses severe class imbalance with weighted loss function
 Supports resuming from checkpoints
 """
@@ -27,7 +27,8 @@ import mlflow.pytorch
 from src.data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
 from src.utils.focal_loss import FocalLoss, create_focal_loss
-from models.vit_segmentation import ViTSegmentation, calculate_iou, train_epoch, validate
+# Use hybrid model instead of pure ViT
+from models.vit_segmentation_hybrid import HybridViTCNNSegmentation, calculate_iou, train_epoch, validate
 
 logger = setup_logging()
 
@@ -209,7 +210,7 @@ def main(resume_checkpoint=None):
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Train ViT Floor Plan Segmentation with class weighting')
     parser.add_argument('--resume', type=str, default=None,
-                       help='Path to checkpoint to resume from (e.g., models/checkpoints_fixed/checkpoint_epoch_10.pth)')
+                       help='Path to checkpoint to resume from (e.g., models/checkpoints/checkpoint_epoch_10.pth)')
     parser.add_argument('--fresh', action='store_true', default=False,
                        help='Start training from scratch, ignoring any existing checkpoints')
     args = parser.parse_args()
@@ -241,12 +242,12 @@ def main(resume_checkpoint=None):
         logger.info("FRESH START: Starting training from scratch (--fresh flag)")
         logger.info("=" * 80)
     
-    # Configuration with OPTIMIZED hyperparameters for faster convergence
+    # Configuration with OPTIMIZED hyperparameters for minority class learning
     CONFIG = {
         # Data
         'images_dir': 'data/processed/images',
         'masks_dir': 'data/processed/annotations',
-        'batch_size': 12,  # OPTIMIZED: Larger batch for better gradients
+        'batch_size': 4,  #  Reduced from 12 for better minority class sampling
         'num_workers': 0,
         
         # Model
@@ -258,22 +259,22 @@ def main(resume_checkpoint=None):
         'n_decoder_layers': 3,
         'n_heads': 6,
         'mlp_ratio': 4.0,
-        'dropout': 0.15,  # OPTIMIZED: Increased for better regularization
+        'dropout': 0.25,  # Increased from 0.15 to prevent overfitting to background
         
-        # Training - OPTIMIZED for faster convergence
-        'num_epochs': 40,  # OPTIMIZED: More epochs with improved LR schedule
-        'learning_rate': 1.5e-4,  # OPTIMIZED: Higher LR for faster learning
-        'weight_decay': 0.005,  # OPTIMIZED: Reduced for stability
-        'warmup_steps': 1000,  #Warmup for stable training start
-        'warmup_epochs': 2,  #  Warmup for 2 epochs
-        'gradient_clip': 1.0,  # Gradient clipping for stability
+        # Training - FIXED for better convergence
+        'num_epochs': 50,  # Increased from 40 for more training time
+        'learning_rate': 1.5e-4,  # Kept: Working well
+        'weight_decay': 0.005,  # Kept: Stable
+        'warmup_steps': 1000,  # Warmup for stable training start
+        'warmup_epochs': 3,  # Increased from 2 for more stable start
+        'gradient_clip': 1.0,  # Kept: Gradient clipping for stability
         'mixed_precision': True,
         
-        # Loss function
+        # Loss function -  for minority classes
         'use_class_weights': True,
-        'label_smoothing': 0.05,  # OPTIMIZED: Reduced for sharper predictions
-        'focal_loss_alpha': 0.25,  # Focal loss parameter
-        'focal_loss_gamma': 2.5,  # OPTIMIZED: Increased focusing
+        'label_smoothing': 0.05,  # Kept: Sharper predictions
+        'focal_loss_alpha': 0.25,  # Kept: Balance foreground/background
+        'focal_loss_gamma': 3.0,  # Increased from 2.5 to focus harder on difficult examples
         
         # Checkpointing & Monitoring
         'checkpoint_dir': 'models/checkpoints',
@@ -315,19 +316,23 @@ def main(resume_checkpoint=None):
     logger.info(f"Val batches: {len(val_loader)}")
     logger.info(f"Test batches: {len(test_loader)}")
     
-    # Create model
-    logger.info("Creating model...")
-    model = ViTSegmentation(
+    # Create hybrid ViT-CNN model (FIXED: Better for pixel-level segmentation)
+    logger.info("Creating Hybrid ViT-CNN Segmentation Model...")
+    logger.info("  - ViT Encoder: Global context with 12 layers")
+    logger.info("  - CNN Decoder: Progressive upsampling with skip connections")
+    logger.info("  - Patch Size: 16px (FIXED: smaller for better spatial details)")
+    logger.info("  - Skip Connections: Enabled (FIXED: preserves spatial information)")
+    model = HybridViTCNNSegmentation(
         img_size=CONFIG['img_size'],
-        patch_size=CONFIG['patch_size'],
+        patch_size=16,  # FIXED: Smaller patches for finer details (was 32)
         in_channels=3,
         n_classes=CONFIG['n_classes'],
         embed_dim=CONFIG['embed_dim'],
         n_encoder_layers=CONFIG['n_encoder_layers'],
-        n_decoder_layers=CONFIG['n_decoder_layers'],
         n_heads=CONFIG['n_heads'],
         mlp_ratio=CONFIG['mlp_ratio'],
-        dropout=CONFIG['dropout']
+        dropout=CONFIG['dropout'],
+        skip_connections=True  # Enable skip connections
     ).to(device)
     
     total_params = sum(p.numel() for p in model.parameters())
@@ -373,12 +378,14 @@ def main(resume_checkpoint=None):
     # FIXED: Prevent learning rate from decaying too aggressively
     cosine_scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(
         optimizer,
-        T_0=30,        #  Longer restart period (was 15) - slower decay
-        T_mult=1.5,    #  Gentler restart growth (was 2) - 30, 45, 67...
+        T_0=50,        # Increased from 30 to 50 - slower decay to prevent regression
+        T_mult=1,      # Keep restart period constant (was 2 which grows: 15→30→60)
         eta_min=1e-5   # Higher minimum LR (was 1e-6) - keeps learning
     )
     # Effect: Learning rate stays high enough for model to continue improving
-    # throughout all 60 epochs instead of plateauing at epoch ~40
+    # throughout all 50 epochs without regression at epoch 20
+    # Schedule: Decays over 50 epochs, restarts every 50 epochs at higher LR
+    # This prevents the LR collapse that caused validation IoU regression at epoch 20
     
     # Mixed precision
     scaler = GradScaler() if CONFIG['mixed_precision'] and torch.cuda.is_available() else None
