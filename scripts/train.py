@@ -373,7 +373,7 @@ def main(resume_checkpoint=None):
         logger.info("RESUMING TRAINING FROM CHECKPOINT")
         logger.info("="*80)
         start_epoch, history, best_val_iou, best_active_classes = load_checkpoint(
-            resume_from, model, optimizer, scheduler, device
+            resume_from, model, optimizer, warmup_sched, device
         )
     else:
         logger.info("="*80)
@@ -457,7 +457,7 @@ def main(resume_checkpoint=None):
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict': scheduler.state_dict(),
+                'scheduler_state_dict': warmup_sched.state_dict(),
                 'val_loss': val_loss,
                 'val_iou': val_iou,
                 'active_classes': active_classes,
@@ -472,7 +472,7 @@ def main(resume_checkpoint=None):
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict': scheduler.state_dict(),
+                'scheduler_state_dict': warmup_sched.state_dict(),
                 'val_loss': val_loss,
                 'val_iou': val_iou,
                 'active_classes': active_classes,
@@ -487,7 +487,7 @@ def main(resume_checkpoint=None):
         'epoch': CONFIG['num_epochs'] - 1,
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
-        'scheduler_state_dict': scheduler.state_dict(),
+        'scheduler_state_dict': warmup_sched.state_dict(),
         'history': history,
         'config': CONFIG
     }, final_model_path)

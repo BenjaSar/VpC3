@@ -365,9 +365,9 @@ On CubiCasa5K validation set:
 
 Training generates:
 
-- `models/checkpoints_fixed/best_model.pth` - Best validation IoU
-- `models/checkpoints_fixed/final_model.pth` - Final trained model
-- `models/checkpoints_fixed/training_history.json` - Loss & metrics history
+- `models/checkpoints/best_model.pth` - Best validation IoU
+- `models/checkpoints/final_model.pth` - Final trained model
+- `models/checkpoints/training_history.json` - Loss & metrics history
 - `outputs/eda/` - Dataset analysis visualizations
 
 ## 🔧 Troubleshooting
@@ -445,16 +445,6 @@ Contributions welcome! Please:
 4. Push: `git push origin feature/improvement`
 5. Create Pull Request
 
-## 📝 Citation
-
-```bibtex
-@software{floorplan_vit_classifier,
-  title={Floor Plan Vision Transformer Classifier},
-  author={Your Name},
-  year={2025},
-  url={https://github.com/yourusername/floorplan-vit-classifier}
-}
-```
 
 ## 📄 License
 
