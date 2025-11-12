@@ -1,0 +1,20 @@
+{
+    "images_dir": "data/processed/images",
+    "masks_dir": "data/processed/annotations",
+    "batch_size": 4,
+    "num_workers": 0,
+    "img_size": 512,
+    "n_classes": 12,
+    "num_epochs": 50,
+    "learning_rate": 0.00015,
+    "weight_decay": 0.005,
+    "warmup_epochs": 3,
+    "gradient_clip": 1.0,
+    "mixed_precision": true,
+    "use_class_weights": true,
+    "focal_loss_alpha": 0.25,
+    "focal_loss_gamma": 3.0,
+    "checkpoint_dir": "models/checkpoints",
+    "save_frequency": 10,
+    "log_frequency": 50
+}

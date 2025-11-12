@@ -1,0 +1,10 @@
+{
+    "dataset_metrics": {
+        "mean_iou": 0.11963182620913358,
+        "pixel_accuracy": 0.20019770053125197,
+        "fw_iou": 0.15999074467504262,
+        "num_samples": 992
+    },
+    "timestamp": "2025-11-12T15:01:23.283238",
+    "checkpoint": "models/checkpoints/best_model.pth"
+}
