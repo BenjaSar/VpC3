@@ -10,12 +10,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import numpy as np
 import cv2
-import json
+# import json
 from collections import Counter
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from PIL import Image
-import os
+# import matplotlib.patches as mpatches
+# from PIL import Image
+# import os
 
 def check_dataset_structure(images_dir, masks_dir):
     """Check if dataset structure is valid"""

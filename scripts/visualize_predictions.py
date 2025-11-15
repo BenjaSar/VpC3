@@ -9,12 +9,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import torch
-import torch.nn as nn
+# import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from PIL import Image
-import cv2
+# from PIL import Image
+# import cv2
 
 from src.data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging

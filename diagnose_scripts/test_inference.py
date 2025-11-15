@@ -11,15 +11,16 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import torch
-import torch.nn as nn
+# import torch.nn as nn
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import json
 
-from train_v1 import ViTSegmentation
-from data.dataset import create_dataloaders
+# from train_v1 import ViTSegmentation
+from models.vit_segmentation import ViTSegmentation
+from scripts.run_dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
 
 logger = setup_logging()

@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import torch
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Tuple, Optional #  List,
 import logging
 from torch.utils.data import Dataset, DataLoader
 import albumentations as A

@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.data.preprocessing import ImagePreprocessor, DataValidator  
 from src.utils.logging_config import setup_logging
 import cv2
-import numpy as np
+# import numpy as np
 from tqdm import tqdm
 
 logger = setup_logging()

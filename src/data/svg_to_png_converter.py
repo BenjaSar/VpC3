@@ -3,14 +3,14 @@ SVG to PNG Converter for CubiCasa5K Annotations
 Converts model.svg files to semantic segmentation PNG masks with proper class labels
 """
 
-import os
+# import os
 import sys
 from pathlib import Path
 from tqdm import tqdm
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image #, ImageDraw
 import xml.etree.ElementTree as ET
-from typing import Dict, Tuple, List
+from typing import Tuple, List # Dict,
 import cv2
 
 # Room class mapping - CubiCasa5K room types to class indices
@@ -258,7 +258,7 @@ def convert_cubicasa_svg_annotations(source_dir, target_dir, max_samples=None):
         print(f"  {class_id:2d}: {room_type}")
 
 
-def check_dependencies():
+def check_dependencies(): # NO ESTA CHECKEADO NADA
     """Check if required dependencies are installed"""
     print("Checking dependencies...")
     print("="*80)

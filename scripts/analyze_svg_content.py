@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import xml.etree.ElementTree as ET
 from collections import Counter
-import numpy as np
+# import numpy as np
 
 # Room class mapping from svg_to_png_converter
 ROOM_CLASS_MAPPING = {

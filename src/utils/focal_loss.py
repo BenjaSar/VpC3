@@ -5,7 +5,7 @@ Reference: "Focal Loss for Dense Object Detection" (Lin et al., 2017)
 https://arxiv.org/abs/1708.02002
 """
 
-import torch
+# import torch
 import torch.nn as nn
 import torch.nn.functional as F
 

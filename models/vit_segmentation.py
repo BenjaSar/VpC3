@@ -12,15 +12,15 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.cuda.amp import GradScaler, autocast
+# import torch.optim as optim
+from torch.cuda.amp import autocast #, GradScaler
 import numpy as np
 from tqdm import tqdm
-import json
-from datetime import datetime
+# import json
+# from datetime import datetime
 
 # Import project modules
-from src.data.dataset import create_dataloaders
+# from src.data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
 
 logger = setup_logging()

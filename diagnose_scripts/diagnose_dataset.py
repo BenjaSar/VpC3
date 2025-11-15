@@ -12,7 +12,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from collections import Counter
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 def diagnose_dataset():
     """Comprehensive dataset diagnostics"""

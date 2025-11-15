@@ -10,7 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import torch
-import torch.nn as nn
+# import torch.nn as nn
 import torch.optim as optim
 from torch.cuda.amp import GradScaler, autocast
 import numpy as np
@@ -21,14 +21,14 @@ from datetime import datetime
 from collections import Counter
 import time
 import mlflow
-import mlflow.pytorch
+# import mlflow.pytorch
 
 # Import project modules
 from src.data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
-from src.utils.focal_loss import FocalLoss, create_focal_loss
+from src.utils.focal_loss import FocalLoss #, create_focal_loss
 # Use hybrid model instead of pure ViT
-from models.vit_segmentation_hybrid import HybridViTCNNSegmentation, calculate_iou, train_epoch, validate
+from models.vit_segmentation_hybrid import HybridViTCNNSegmentation, validate # calculate_iou, train_epoch,
 
 logger = setup_logging()
 
