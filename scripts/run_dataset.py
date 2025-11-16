@@ -8,10 +8,13 @@ import sys
 from pathlib import Path
 
 # Add project root to path
-sys.path.insert(0, str(Path(__file__).parent))
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 
 import torch
-from data.dataset import create_dataloaders, FloorPlanDataset, get_augmentation_pipeline
+#from data.dataset import create_dataloaders, FloorPlanDataset, get_augmentation_pipeline
+from src.data.dataset import create_dataloaders, FloorPlanDataset, get_augmentation_pipeline
 from src.utils.logging_config import setup_logging
 import matplotlib.pyplot as plt
 import numpy as np
@@ -68,7 +71,7 @@ def main():
         'batch_size': 8,
         'num_workers': 0,  # Set to 0 for Windows, 4 for Linux/Mac
         'image_size': 512,
-        'num_classes': 34,
+        'num_classes': 12,
         'split_ratio': (0.7, 0.15, 0.15)
     }
     

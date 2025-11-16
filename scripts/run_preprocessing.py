@@ -8,9 +8,9 @@ import sys
 from pathlib import Path
 
 # Add project root to path
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.preprocessing import ImagePreprocessor, DataValidator
+from src.data.preprocessing import ImagePreprocessor, DataValidator  
 from src.utils.logging_config import setup_logging
 import cv2
 import numpy as np
