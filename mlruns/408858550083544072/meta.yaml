@@ -1,0 +1,6 @@
+artifact_location: file:///home/ubuntu/floorplan_classifier/VpC3/mlruns/408858550083544072
+creation_time: 1762907550487
+experiment_id: '408858550083544072'
+last_update_time: 1762907550487
+lifecycle_stage: active
+name: floor-plan-segmentation

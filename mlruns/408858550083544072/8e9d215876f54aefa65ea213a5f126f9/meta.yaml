@@ -1,0 +1,14 @@
+artifact_uri: file:///home/ubuntu/floorplan_classifier/VpC3/mlruns/408858550083544072/8e9d215876f54aefa65ea213a5f126f9/artifacts
+end_time: 1762958541348
+entry_point_name: ''
+experiment_id: '408858550083544072'
+lifecycle_stage: active
+run_id: 8e9d215876f54aefa65ea213a5f126f9
+run_name: unet++-12classes-20251112_130132
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762952492937
+status: 3
+tags: []
+user_id: ubuntu

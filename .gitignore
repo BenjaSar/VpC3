@@ -130,8 +130,8 @@ logs/*.log
 *.log
 
 # MLflow
-mlruns/
-mlartifacts/
+#mlruns/
+#mlartifacts/
 
 # Weights & Biases
 wandb/
