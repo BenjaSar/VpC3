@@ -1,0 +1,87 @@
+{
+  "total_images": 992,
+  "total_pixels": 260046848,
+  "class_statistics": {
+    "class_0": {
+      "pixel_count": 108216865,
+      "percentage": 41.6144,
+      "weight": 0.2003
+    },
+    "class_1": {
+      "pixel_count": 22241829,
+      "percentage": 8.553,
+      "weight": 0.9743
+    },
+    "class_2": {
+      "pixel_count": 14676182,
+      "percentage": 5.6437,
+      "weight": 1.4766
+    },
+    "class_3": {
+      "pixel_count": 35809998,
+      "percentage": 13.7706,
+      "weight": 0.6052
+    },
+    "class_4": {
+      "pixel_count": 30124594,
+      "percentage": 11.5843,
+      "weight": 0.7194
+    },
+    "class_5": {
+      "pixel_count": 4572816,
+      "percentage": 1.7585,
+      "weight": 4.739
+    },
+    "class_6": {
+      "pixel_count": 6275589,
+      "percentage": 2.4133,
+      "weight": 3.4532
+    },
+    "class_7": {
+      "pixel_count": 0,
+      "percentage": 0.0,
+      "weight": 0
+    },
+    "class_8": {
+      "pixel_count": 908220,
+      "percentage": 0.3493,
+      "weight": 23.8605
+    },
+    "class_9": {
+      "pixel_count": 355692,
+      "percentage": 0.1368,
+      "weight": 60.9251
+    },
+    "class_10": {
+      "pixel_count": 20449134,
+      "percentage": 7.8636,
+      "weight": 1.0597
+    },
+    "class_11": {
+      "pixel_count": 16415929,
+      "percentage": 6.3127,
+      "weight": 1.3201
+    }
+  },
+  "imbalance_ratios": {
+    "class_0_vs_class_1": 4.9,
+    "class_0_vs_class_2": 7.4,
+    "class_0_vs_class_3": 3.0,
+    "class_0_vs_class_4": 3.6,
+    "class_0_vs_class_5": 23.7,
+    "class_0_vs_class_6": 17.2,
+    "class_0_vs_class_7": 108216865.0,
+    "class_0_vs_class_8": 119.2,
+    "class_0_vs_class_9": 304.2,
+    "class_0_vs_class_10": 5.3,
+    "class_0_vs_class_11": 6.6
+  },
+  "summary": {
+    "total_images": 992,
+    "total_pixels": 260046848,
+    "avg_pixels_per_image": 262144,
+    "background_coverage_percent": 41.61,
+    "active_classes": 11,
+    "max_imbalance_ratio": 108216865.0
+  }
+}

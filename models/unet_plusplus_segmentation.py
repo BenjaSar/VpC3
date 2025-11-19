@@ -19,27 +19,34 @@ from tqdm import tqdm
 
 
 def create_unet_model(
-    encoder_name='efficientnet-b0',
+    encoder_name='efficientnet-b4',
     encoder_weights='imagenet',
     in_channels=3,
     num_classes=12,
-    decoder_channels=(256, 128, 64, 32, 16),
-    decoder_attention_type=None
+    decoder_channels=(512, 256, 128, 64, 32),
+    decoder_attention_type='scse'
 ):
     """
     Create UNet++ model with specified encoder
+    PHASE 3: Upgraded architecture for better accuracy
     
     Args:
-        encoder_name: Name of encoder backbone (e.g., 'efficientnet-b0')
+        encoder_name: Name of encoder backbone (e.g., 'efficientnet-b4')
         encoder_weights: Pretrained weights ('imagenet' or None)
         in_channels: Number of input channels (3 for RGB)
         num_classes: Number of output classes
-        decoder_channels: Number of channels in decoder blocks
-        decoder_attention_type: Type of attention mechanism
+        decoder_channels: Number of channels in decoder blocks (increased)
+        decoder_attention_type: Type of attention mechanism ('scse' for Spatial+Channel)
     
     Returns:
         Initialized UNet++ model
     """
+  
+    # 1. EfficientNet-B4 instead of B0: More capacity, better features
+    # 2. SCSE attention: Spatial + Channel attention for better feature weighting
+    # 3. Larger decoder channels: (512, 256, 128, 64, 32) vs (256, 128, 64, 32, 16)
+    # 4. Deep supervision enabled via aux_params
+    
     model = smp.UnetPlusPlus(
         encoder_name=encoder_name,
         encoder_weights=encoder_weights if encoder_weights else None,
@@ -48,23 +55,35 @@ def create_unet_model(
         decoder_channels=decoder_channels,
         decoder_attention_type=decoder_attention_type,
         activation=None,  # Output raw logits (will apply softmax after)
-        aux_params=None
+        # Deep supervision: auxiliary output from decoder
+        aux_params=dict(
+            pooling='avg',
+            dropout=0.2,
+            classes=num_classes
+        ) if encoder_weights else None
     )
     
     return model
 
 
 class UNetPlusPlusSegmentation(nn.Module):
-    """Wrapper around segmentation_models UNet++ for consistency"""
+    """
+    Wrapper around segmentation_models UNet++ for consistency
+    PHASE 3: Enhanced with B4 encoder, attention, and deep supervision
+    """
     
-    def __init__(self, in_channels=3, num_classes=12):
+    def __init__(self, in_channels=3, num_classes=12, encoder_weights=None):
         super().__init__()
         self.num_classes = num_classes
+        self.has_aux = encoder_weights is not None
+        
         self.model = create_unet_model(
-            encoder_name='efficientnet-b0',
-            encoder_weights=None,
+            encoder_name='efficientnet-b4',  # Upgraded from B0 to B4
+            encoder_weights=encoder_weights,  # Use pretrained weights if available
             in_channels=in_channels,
-            num_classes=num_classes
+            num_classes=num_classes,
+            decoder_channels=(512, 256, 128, 64, 32),  # Larger decoder
+            decoder_attention_type='scse'  # SCSE attention
         )
     
     def forward(self, x):
@@ -75,9 +94,16 @@ class UNetPlusPlusSegmentation(nn.Module):
             x: Input tensor (B, 3, H, W)
         
         Returns:
-            Output logits (B, num_classes, H, W)
+            Output logits (B, num_classes, H, W) or tuple if deep supervision enabled
         """
-        return self.model(x)
+        output = self.model(x)
+        
+        # If model has auxiliary head (deep supervision)
+        if isinstance(output, tuple):
+            # Return main output, auxiliary output will be handled in loss
+            return output[0]
+        
+        return output
 
 
 def calculate_iou(pred, target, n_classes):

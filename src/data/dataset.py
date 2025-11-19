@@ -125,6 +125,7 @@ class FloorPlanDataset(Dataset):
 def get_augmentation_pipeline(image_size: int = 512, split: str = "train") -> A.Compose:
     """
     Get albumentations augmentation pipeline
+    Enhanced with aggressive augmentation to combat class imbalance
     
     Args:
         image_size: Target image size
@@ -135,21 +136,95 @@ def get_augmentation_pipeline(image_size: int = 512, split: str = "train") -> A.
     """
     
     if split == "train":
+        # PHASE 2: Aggressive augmentation to force model diversity
         augmentation = A.Compose([
+            # Resize to target size
             A.Resize(image_size, image_size, interpolation=cv2.INTER_LINEAR),
+            
+            # GEOMETRIC AUGMENTATION: Force model to learn invariant features
+            # Flips (floor plans are symmetric but not necessarily)
             A.HorizontalFlip(p=0.5),
             A.VerticalFlip(p=0.5),
-            A.Rotate(limit=15, p=0.5, border_mode=cv2.BORDER_REFLECT),
-            A.ElasticTransform(alpha=1, sigma=50, p=0.3),
-            A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
-            A.GaussNoise(p=0.2),
-            A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            
+            # Rotations (small for floor plans - 0-20 degrees)
+            A.Rotate(limit=20, p=0.6, border_mode=cv2.BORDER_REFLECT),
+            
+            # Shift, Scale, Rotate combined
+            A.ShiftScaleRotate(
+                shift_limit=0.1,      # Shift up to 10%
+                scale_limit=0.15,     # Scale 0.85-1.15x
+                rotate_limit=15,      # Rotate ±15 degrees
+                p=0.5,
+                border_mode=cv2.BORDER_REFLECT
+            ),
+            
+            # Elastic deformation (morphs walls, spaces)
+            A.ElasticTransform(
+                alpha=1,
+                sigma=50,
+                alpha_affine=None,
+                p=0.4
+            ),
+            
+            # Grid distortion (warps floor plan layout slightly)
+            A.GridDistortion(
+                num_steps=5,
+                distort_limit=0.3,
+                p=0.3,
+                border_mode=cv2.BORDER_REFLECT
+            ),
+            
+            # PHOTOMETRIC AUGMENTATION: Vary lighting conditions
+            # Brightness and contrast (varying lighting)
+            A.RandomBrightnessContrast(
+                brightness_limit=0.3,    # ±30% brightness
+                contrast_limit=0.3,      # ±30% contrast
+                p=0.6
+            ),
+            
+            # Gamma augmentation (simulate different camera exposures)
+            A.RandomGamma(
+                gamma_limit=(70, 130),
+                p=0.3
+            ),
+            
+            # Gaussian blur (simulate focus variations)
+            A.GaussianBlur(
+                blur_limit=3,
+                p=0.3
+            ),
+            
+            # Gaussian noise (simulate sensor noise)
+            A.GaussNoise(
+                var_limit=(10.0, 50.0),
+                p=0.4
+            ),
+            
+            # ISO noise (realistic camera noise)
+            A.ISONoise(
+                color_shift=(0.01, 0.05),
+                intensity=(0.1, 0.5),
+                p=0.2
+            ),
+            
+            # Normalize to ImageNet statistics
+            A.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            ),
+            
+            # Convert to PyTorch tensors
             ToTensorV2()
         ], is_check_shapes=False)
+    
     else:
+        # Validation/Test: Minimal augmentation
         augmentation = A.Compose([
             A.Resize(image_size, image_size, interpolation=cv2.INTER_LINEAR),
-            A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            A.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            ),
             ToTensorV2()
         ], is_check_shapes=False)
     

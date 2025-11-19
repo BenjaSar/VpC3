@@ -26,7 +26,7 @@ import mlflow.pytorch
 # Import project modules
 from src.data.dataset import create_dataloaders
 from src.utils.logging_config import setup_logging
-from src.utils.focal_loss import FocalLoss
+from src.utils.combined_loss import CombinedLoss
 from models.unet_plusplus_segmentation import UNetPlusPlusSegmentation, calculate_iou, train_epoch, validate
 
 logger = setup_logging()
@@ -196,16 +196,18 @@ def main():
         'batch_size': 4,
         'num_workers': 0,
         'img_size': 512,
-        'n_classes': 12,
-        'num_epochs': 50,
-        'learning_rate': 1.5e-4,
+        'n_classes': 11,
+        'num_epochs': 5,
+        'learning_rate': 5e-4,
         'weight_decay': 0.005,
         'warmup_epochs': 3,
         'gradient_clip': 1.0,
+        'gradient_accumulation_steps': 4,  # Effective batch size 4*4=16
         'mixed_precision': True,
         'use_class_weights': True,
         'focal_loss_alpha': 0.25,
-        'focal_loss_gamma': 3.0,
+        'focal_loss_gamma': 5.0,
+        'early_stopping_patience': 15,  # Early stopping
         'checkpoint_dir': 'models/checkpoints',
         'save_frequency': 10,
         'log_frequency': 50,
@@ -239,8 +241,8 @@ def main():
     logger.info(f"Val batches: {len(val_loader)}")
     
     logger.info("Creating UNet++ Model...")
-    logger.info("  - Encoder: EfficientNet-B0 (pretrained ImageNet)")
-    logger.info("  - Decoder: Dense skip connections")
+    logger.info("  - Encoder: EfficientNet-B4 (pretrained ImageNet)")
+    logger.info("  - Decoder: Dense skip connections with SCSE attention")
     logger.info("  - Expected: 15-20 epochs to 0.50+ IoU")
     
     model = UNetPlusPlusSegmentation(
@@ -255,16 +257,11 @@ def main():
     
     if CONFIG['use_class_weights']:
         class_weights = calculate_class_weights(train_loader, CONFIG['n_classes'], device)
-        criterion = FocalLoss(
-            alpha=CONFIG['focal_loss_alpha'],
-            gamma=CONFIG['focal_loss_gamma'],
-            reduction='mean',
-            class_weights=class_weights
-        )
-        logger.info("[OK] Using Focal Loss with class weights")
+        # FIX: Use simple weighted cross-entropy instead of complex combined loss
+        criterion = nn.CrossEntropyLoss(weight=class_weights, reduction='mean')
+        logger.info("[OK] Using Weighted CrossEntropy Loss")
     else:
-        criterion = FocalLoss(alpha=CONFIG['focal_loss_alpha'], 
-                             gamma=CONFIG['focal_loss_gamma'], reduction='mean')
+        criterion = nn.CrossEntropyLoss(reduction='mean')
     
     optimizer = optim.AdamW(
         model.parameters(),
@@ -295,6 +292,7 @@ def main():
     start_epoch = 0
     best_val_iou = 0.0
     best_active_classes = 0
+    epochs_without_improvement = 0  # PHASE 4: Early stopping counter
     history = {
         'train_loss': [],
         'train_iou': [],
@@ -374,6 +372,7 @@ def main():
         if improved:
             best_val_iou = val_iou
             best_active_classes = active_classes
+            epochs_without_improvement = 0  # PHASE 4: Reset counter
             best_model_path = checkpoint_dir / 'best_model.pth'
             torch.save({
                 'epoch': epoch,
@@ -387,6 +386,14 @@ def main():
                 'config': CONFIG
             }, best_model_path)
             logger.info(f"[OK] Saved best model (IoU: {val_iou:.4f}, Active: {active_classes})")
+        else:
+            epochs_without_improvement += 1  # PHASE 4: Increment counter
+            logger.info(f"No improvement. Epochs without improvement: {epochs_without_improvement}/{CONFIG['early_stopping_patience']}")
+            
+            # PHASE 4: Early stopping
+            if epochs_without_improvement >= CONFIG['early_stopping_patience']:
+                logger.info(f"Early stopping triggered after {epochs_without_improvement} epochs without improvement")
+                break
         
         if (epoch + 1) % CONFIG['save_frequency'] == 0:
             checkpoint_path = checkpoint_dir / f'checkpoint_epoch_{epoch+1}.pth'

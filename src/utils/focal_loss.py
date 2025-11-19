@@ -80,6 +80,13 @@ class FocalLoss(nn.Module):
         ce = F.cross_entropy(inputs, targets, reduction='none', weight=self.class_weights)
         focal_loss = self.alpha * focal_weight * ce
         
+        # IMPROVEMENT: Apply additional class weighting to minority classes
+        if self.class_weights is not None:
+            # Get target class weights for each pixel
+            target_weights = self.class_weights[targets]
+            # Multiply focal loss by target class weight
+            focal_loss = focal_loss * target_weights
+        
         # Apply reduction
         if self.reduction == 'mean':
             return focal_loss.mean()
