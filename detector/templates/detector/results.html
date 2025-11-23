@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - Detección de Habitaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .image-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .image-container h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stats-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .stats-container h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .detections-table {
+            width: 100%;
+            margin-top: 30px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .detections-table h2 {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .room-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .badge-bedroom { background: #ffcccb; color: #8b0000; }
+        .badge-kitchen { background: #ffd700; color: #8b6914; }
+        .badge-living { background: #98fb98; color: #006400; }
+        .badge-bathroom { background: #87ceeb; color: #000080; }
+        .badge-dining { background: #ffa07a; color: #8b4513; }
+        .badge-corridor { background: #d3d3d3; color: #696969; }
+        .badge-bed { background: #ffcccb; color: #8b0000; }
+        .badge-kit { background: #ffd700; color: #8b6914; }
+        .badge-liv { background: #98fb98; color: #006400; }
+        .badge-bat { background: #87ceeb; color: #000080; }
+        .badge-din { background: #ffa07a; color: #8b4513; }
+        .badge-cor { background: #d3d3d3; color: #696969; }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .rooms-by-type {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .room-type-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .room-type-card .count {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .room-type-card .name {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Resultados de la Detección</h1>
+
+        <div class="results-grid">
+            <!-- Imagen Original -->
+            <div class="image-container">
+                <h2>📁 Imagen Original</h2>
+                <img src="{{ uploaded_image }}" alt="Imagen Original">
+            </div>
+
+            <!-- Imagen con Detecciones -->
+            <div class="image-container">
+                <h2>🎯 Detecciones y Áreas</h2>
+                <img src="{{ result_image }}" alt="Resultados">
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-container">
+            <h2>📊 Estadísticas del Plano</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="stat-item">
+                    <div class="stat-label">Total de Habitaciones</div>
+                    <div class="stat-value">{{ stats.total_rooms }}</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">Área Total</div>
+                    <div class="stat-value">{{ stats.total_area_m2|floatformat:1 }} m²</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">Área Promedio</div>
+                    <div class="stat-value">{{ stats.average_area_m2|floatformat:1 }} m²</div>
+                </div>
+            </div>
+
+            {% if stats.rooms_by_type %}
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Habitaciones por Tipo:</h3>
+            <div class="rooms-by-type">
+                {% for room_type, count in stats.rooms_by_type.items %}
+                <div class="room-type-card">
+                    <div class="count">{{ count }}</div>
+                    <div class="name">{{ room_type }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Tabla de Detecciones -->
+        {% if detections %}
+        <div class="detections-table">
+            <h2>🏠 Detecciones Detalladas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo de Habitación</th>
+                        <th>Confianza</th>
+                        <th>Área</th>
+                        <th>Bounding Box</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detection in detections %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <span class="room-badge badge-{{ detection.room_type|lower|slice:':3' }}">
+                                {{ detection.room_type }}
+                            </span>
+                        </td>
+                        <td>
+                            <div>{{ detection.confidence }}</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: {{ detection.confidence|cut:'%' }}%"></div>
+                            </div>
+                        </td>
+                        <td><strong>{{ detection.area }}</strong></td>
+                        <td style="font-size: 0.85rem; color: #666;">{{ detection.bbox }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- Acciones -->
+        <div class="actions">
+            <a href="{% url 'detector:index' %}" class="btn btn-primary">
+                🔄 Analizar Otro Plano
+            </a>
+            <button onclick="window.print()" class="btn btn-secondary">
+                🖨️ Imprimir Reporte
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Animación de entrada
+        document.querySelectorAll('.stat-item, .room-type-card').forEach((el, i) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                el.style.transition = 'all 0.5s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, i * 100);
+        });
+    </script>
+</body>
+</html>

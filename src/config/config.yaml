@@ -1,0 +1,192 @@
+# =============================================================================
+# CubiCasa5K Room Detection - Configuración Principal
+# =============================================================================
+
+project:
+  name: "CubiCasa5K Room Detection"
+  version: "1.0.0"
+  description: "Sistema de detección de habitaciones y cálculo de áreas"
+  author: "Vision por Computadora 3"
+
+# Paths
+paths:
+  data_root: "./data/cubicasa5k"
+  checkpoints: "./checkpoints"
+  results: "./results"
+  mlruns: "./mlruns"
+  logs: "./logs"
+
+# Dataset
+dataset:
+  name: "CubiCasa5K"
+  num_samples: 5000
+  num_classes: 15
+  class_names:
+    - "Bedroom"
+    - "Kitchen"
+    - "Living Room"
+    - "Bathroom"
+    - "Dining Room"
+    - "Corridor"
+    - "Balcony"
+    - "Storage"
+    - "Office"
+    - "Laundry"
+    - "Garage"
+    - "Terrace"
+    - "Closet"
+    - "Entrance"
+    - "Other"
+
+  split_ratios:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+
+  preprocessing:
+    img_size: [512, 512]
+    pixel_to_meter: 0.02
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+
+# Model Architecture
+model:
+  name: "SwinMaskRCNN"
+  backbone: "Swin Transformer Tiny"
+
+  backbone_config:
+    embed_dim: 96
+    depths: [2, 2, 6, 2]
+    num_heads: [3, 6, 12, 24]
+    window_size: 7
+    mlp_ratio: 4.0
+    drop_rate: 0.0
+    attn_drop_rate: 0.0
+
+  neck:
+    type: "FPN"
+    in_channels: [96, 192, 384, 768]
+    out_channels: 256
+    num_outs: 5
+
+  head:
+    type: "MaskRCNN"
+    hidden_dim: 256
+    num_convs: 4
+
+# Training
+training:
+  # Optimized for NVIDIA Quadro P1000 (4GB VRAM)
+  batch_size: 2
+  gradient_accumulation_steps: 4  # Effective batch size: 8
+  num_epochs: 12
+  num_workers: 2
+
+  optimizer:
+    type: "AdamW"
+    lr: 0.0001
+    weight_decay: 0.05
+    betas: [0.9, 0.999]
+
+  scheduler:
+    type: "ReduceLROnPlateau"
+    mode: "max"
+    factor: 0.5
+    patience: 3
+    verbose: true
+
+  loss_weights:
+    cls_weight: 1.0
+    reg_weight: 1.0
+    mask_weight: 1.0
+
+  # Mixed Precision Training
+  use_amp: true
+
+  # Early Stopping
+  early_stopping:
+    enabled: true
+    patience: 5
+    min_delta: 0.001
+
+# Evaluation
+evaluation:
+  metrics:
+    - "mAP"
+    - "IoU"
+    - "Precision"
+    - "Recall"
+    - "F1-Score"
+    - "Area MAE"
+    - "Area RMSE"
+    - "Area MAPE"
+
+  iou_thresholds: [0.5, 0.75, 0.95]
+  score_threshold: 0.5
+  nms_threshold: 0.5
+
+# Inference
+inference:
+  checkpoint: "checkpoints/best_model.pth"
+  device: "cuda"  # cuda or cpu
+  score_threshold: 0.5
+  batch_size: 1
+  visualize: true
+  save_results: true
+
+# MLflow
+mlflow:
+  enabled: true
+  tracking_uri: "./mlruns"
+  experiment_name: "CubiCasa5K-RoomDetection"
+  run_name_prefix: "swin-maskrcnn"
+
+  log_params: true
+  log_metrics: true
+  log_artifacts: true
+  log_models: true
+
+  autolog:
+    log_every_n_steps: 50
+    log_every_n_epoch: 1
+
+# Weights & Biases (opcional)
+wandb:
+  enabled: false
+  project: "cubicasa5k-room-detection"
+  entity: null
+  tags:
+    - "vision-transformer"
+    - "room-detection"
+    - "segmentation"
+
+# GPU
+gpu:
+  device: "cuda:0"
+  model: "NVIDIA Quadro P1000"
+  memory_gb: 4
+  cuda_version: "12.8"
+  enable_cudnn_benchmark: true
+
+# Reproducibility
+seed: 42
+deterministic: false
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/training.log"
+  console: true
+
+# Visualization
+visualization:
+  save_every_n_epochs: 1
+  num_samples_to_visualize: 4
+  colors:
+    Bedroom: [255, 99, 71]
+    Kitchen: [255, 165, 0]
+    "Living Room": [60, 179, 113]
+    Bathroom: [100, 149, 237]
+    "Dining Room": [255, 215, 0]

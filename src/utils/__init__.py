@@ -1,7 +1,16 @@
 """
-Utilities Module
+Utilidades del proyecto
 """
 
-from .logging_config import setup_logging
+from .area_calculator import RoomAreaCalculator, calculate_perimeter
+from .visualization import FloorPlanVisualizer, ROOM_COLORS
+from .metrics import DetectionMetrics, AreaEstimationMetrics
 
-__all__ = ['setup_logging']
+__all__ = [
+    "RoomAreaCalculator",
+    "calculate_perimeter",
+    "FloorPlanVisualizer",
+    "ROOM_COLORS",
+    "DetectionMetrics",
+    "AreaEstimationMetrics",
+]

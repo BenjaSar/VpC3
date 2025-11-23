@@ -1,0 +1,16 @@
+{
+  "project_name": "CubiCasa5K Room Detection & Area Estimation",
+  "project_slug": "cubicasa5k-room-detection",
+  "description": "Sistema avanzado de detección de habitaciones y estimación de áreas usando Vision Transformers sobre el dataset CubiCasa5K",
+  "author_name": "Vision por Computadora 3 - Maestría",
+  "python_version": "3.13",
+  "pytorch_version": "2.0.0",
+  "cuda_version": "12.8",
+  "gpu_model": "NVIDIA Quadro P1000",
+  "dataset": "CubiCasa5K",
+  "model_architecture": "Swin Transformer + Mask R-CNN",
+  "mlflow_enabled": "yes",
+  "wandb_enabled": "optional",
+  "docker_enabled": "yes",
+  "ci_cd_enabled": "yes"
+}
