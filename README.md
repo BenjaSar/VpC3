@@ -1,4 +1,4 @@
-![header](doc/imgs/LogoHeader.png)
+![header](docs/assets/LogoHeader.png)
 
 # Floor Plan ViT Classifier
 
@@ -640,4 +640,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 *Last Updated: November 11, 2025*
 
-![footer](doc/imgs/LogoFooter.png)
+![footer](docs/assets/LogoFooter.png)
