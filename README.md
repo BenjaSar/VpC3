@@ -34,8 +34,8 @@ Detecciones + Máscaras + Áreas
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/Jorgecuenca1/vpc3casa.git
-cd vpc3casa
+git clone https://github.com/Jorgecuenca1/floorplan-classifier.git
+cd floorplan-classifier
 
 # Crear entorno virtual
 python -m venv venv
@@ -86,7 +86,7 @@ python manage.py runserver 8080
 ## 📂 Estructura del Proyecto
 
 ```
-vpc3casa/
+floorplan-classifier/
 ├── src/
 │   └── models/
 │       └── swin_maskrcnn.py       # Modelo principal

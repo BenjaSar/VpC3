@@ -21,18 +21,18 @@ if requirements_file.exists():
         ]
 
 setup(
-    name="cubicasa5k-room-detection",
+    name="floorplan-classifier",
     version="1.0.0",
     author="Vision por Computadora 3 - Maestría",
-    author_email="vpc3@universidad.edu",
+    author_email="jorge.cuenca@unillanos.edu.co",
     description="Sistema avanzado de detección de habitaciones y estimación de áreas",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/usuario/cubicasa5k-room-detection",
+    url="https://github.com/BenjaSar/floorplan-classifier/",
     project_urls={
-        "Bug Tracker": "https://github.com/usuario/cubicasa5k-room-detection/issues",
-        "Documentation": "https://github.com/usuario/cubicasa5k-room-detection/wiki",
-        "Source Code": "https://github.com/usuario/cubicasa5k-room-detection",
+        "Index": "https://github.com/BenjaSar/floorplan-classifier/blob/main/README.md",
+        "Documentation": "https://github.com/BenjaSar/floorplan-classifier/docs",
+        "Source Code": "https://github.com/BenjaSar/floorplan-classifier/tree/swin_maskrcnn",
     },
     packages=find_packages(where="src"),
     package_dir={"": "src"},

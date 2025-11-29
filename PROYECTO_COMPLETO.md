@@ -41,7 +41,7 @@ Este es un sistema completo de detección y segmentación de habitaciones en pla
 ## ESTRUCTURA DEL PROYECTO
 
 ```
-vpc3casa/
+floorplan-classifier/
 ├── checkpoints/
 │   └── best_model.pth          # Pesos del modelo (138 MB)
 ├── data/
