@@ -1,4 +1,4 @@
-![header](doc/imgs/LogoHeader.png)
+![header](docs/assets/LogoHeader.png)
 
 # Floor Plan ViT Classifier
 
@@ -550,5 +550,5 @@ For questions or issues:
 
 *Last Updated: October 28, 2025*
 
-![footer](doc/imgs/LogoFooter.png)
+![footer](docs/assets/LogoFooter.png)
 
