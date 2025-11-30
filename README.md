@@ -1,8 +1,10 @@
 ![header](docs/assets/LogoHeader.png)
 
-# Floor Plan ViT Classifier
+# Floor Plan Analysis Hub: _ViT Classifier_
 
 A Vision Transformer (ViT) based deep learning model for semantic segmentation of architectural floor plans. This project implements a state-of-the-art ViT architecture to classify and segment different room types and architectural elements in floor plan images using the CubiCasa5K dataset.
+
+> To use other implemented architectures, see the [Implementation Index](https://github.com/BenjaSar/floorplan-classifier/blob/main/README.md) on the main branch.
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-red.svg)](https://pytorch.org/)
@@ -542,6 +544,12 @@ mlruns/                               (MLflow experiments)
         └── params/                   (hyperparameters)
 ```
 
+## Related Papers
+- **CubiCasa5K:** [«CubiCasa5K: A Dataset and an Improved Multi-Task Model for Floorplan Image Analysis»](https://arxiv.org/abs/1904.01920)
+- **DeiT:** [«Training data-efficient image transformers»](https://arxiv.org/abs/2012.12877)
+- **Vision Transformer:** [«An Image is Worth 16x16 Words»](https://arxiv.org/abs/2010.11929)
+
+---
 ## 🔧 Troubleshooting
 
 ### Common Issues
@@ -594,18 +602,18 @@ find data/processed/annotations -type f | wc -l
 
 **For faster training:**
 
-1. ✓ Mixed precision enabled by default
-2. ✓ Optimal batch size (4) pre-configured
-3. Increase `num_workers` on multi-core machines
-4. Use SSD for dataset storage (faster I/O)
+1. [✓] Mixed precision enabled by default
+2. [✓] Optimal batch size (4) pre-configured
+3. [ ] Increase `num_workers` on multi-core machines
+4. [ ] Use SSD for dataset storage (faster I/O)
 
 **For better results:**
 
-1. ✓ Class weights automatically calculated
-2. ✓ Label smoothing enabled
-3. Longer training (100+ epochs)
-4. Data augmentation (in dataset.py)
-5. Learning rate scheduling (cosine annealing with restarts)
+1. [✓] Class weights automatically calculated
+2. [✓] Label smoothing enabled
+3. [ ] Longer training (100+ epochs)
+4. [ ] Data augmentation (in dataset.py)
+5. [ ] Learning rate scheduling (cosine annealing with restarts)
 
 ## 🤝 Contributing
 
@@ -617,22 +625,37 @@ Contributions welcome! Please:
 4. Push: `git push origin feature/improvement`
 5. Create Pull Request
 
+## 📝 Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@software{floorplan_classifier,
+  title={Floor Plan Vision Transformer Classifier},
+  author={Grupo 3 VpC},
+  year={2025},
+  url={https://github.com/BenjaSar/floorplan-classifier}
+}
+```
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- [CubiCasa5K Dataset](https://zenodo.org/record/4817057)
-- [Vision Transformer (ViT)](https://arxiv.org/abs/2010.11929)
-- PyTorch and OpenCV communities
+- [CubiCasa5K](https://github.com/CubiCasa/CubiCasa5k) for the dataset
+- [Hugging Face Transformers](https://huggingface.co/docs/transformers) for model implementations
+- [OpenCV](https://opencv.org/) for image processing
+- [PyTorch](https://pytorch.org/) for the deep learning framework
+- [MLflow](https://mlflow.org/) for experiment tracking
 
-## 📞 Support
 
-- **Issues**: GitHub Issues
-- **Questions**: GitHub Discussions
-- **Email**: support@floorplanalysis.com
+## 📞 Contact
+
+For questions or issues:
+
+- **GitHub Issues**: [Create an issue](https://github.com/BenjaSar/floorplan-classifier/issues)
 
 ---
 
