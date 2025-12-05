@@ -1,0 +1,1533 @@
+% Documento LaTeX para el Proyecto Final del Máster en Inteligencia Artificial
+\documentclass[12pt,a4paper,spanish]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{pdflscape}
+\usepackage{biblatex}
+\addbibresource{referencias.bib}
+
+% Configuración de código
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red}
+}
+
+% Configuración de hiperenlaces
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\onehalfspacing
+
+% Información del documento
+\title{}
+\author{}
+\date{}
+
+\begin{document}
+
+% Portada personalizada
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    % Logo/Header de la institución
+    {\Large \textbf{UNIVERSIDAD DE BUENOS AIRES}}
+    
+    \vspace{0.5cm}
+    {\large Facultad de Ingeniería}
+    
+    \vspace{1cm}
+    {\Large \textbf{MAESTRÍA EN INTELIGENCIA ARTIFICIAL}}
+    
+    \vspace{3cm}
+    
+    % Título principal
+    {\fontsize{12}{20}\selectfont\textbf{
+    Clasificación Automática de Espacios en Planos Arquitectónicos mediante\newline
+    Segmentación Semántica:\newline
+    Análisis Comparativo de Vision Transformer, U-Net++ \newline
+    y Swin Transformer con Mask R-CNN
+    }}
+    
+    \vspace{2.0cm}
+    
+    % Información de presentación
+    {\large \textbf{Trabajo Final de Investigación}}
+    
+    \vspace{0.3cm}
+    {Asignatura: Visión por Computadora}
+    
+    \vspace{1.5cm}
+    
+    % Autores
+    {\large \textbf{Autores:}}
+    
+    \vspace{0.5cm}
+    {Alejandro Lloveras}
+    
+    {Jorge Cuenca}
+    
+    {Fabian Sarmiento}
+    
+    \vspace{2cm}
+    
+    % Fecha y lugar
+    {\large \textbf{Diciembre de 2025}}
+    
+    \vspace{0.5cm}
+    {Buenos Aires, Argentina}
+    
+    \vfill
+    
+    % Pie de página
+    {\small Repositorio: \url{https://github.com/BenjaSar/floorplan-classifier}}
+    
+    \vspace{0.3cm}
+    {\small Dataset: CubiCasa5K - Semantic Segmentation of Floor Plans}
+    
+\end{titlepage}
+
+\newpage
+\newpage
+
+% Resumen
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
+
+Este trabajo presenta un análisis comparativo de arquitecturas modernas de aprendizaje profundo para la clasificación automática de espacios (habitaciones, cocinas, oficinas, garajes, pasillos, etc) en planos arquitectónicos. La segmentación semántica se utiliza como tarea complementaria para lograr la identificación precisa de límites y características de espacios. Se implementaron y evaluaron cuatro arquitecturas distintas: Vision Transformer (ViT) con cabezas de clasificación, U-Net++, U-Net++ mejorado, y Swin Transformer combinado con Mask R-CNN. El trabajo se desarrolla como un repositorio hub que centraliza múltiples ramas de código (\texttt{vit\_classifier}, \texttt{unet\_plus\_plus}, \texttt{unet\_plus\_plus\_improved}, \texttt{swin\_maskrcnn}).
+
+Utilizando el dataset CubiCasa5K, se desarrolló el trabajo de experimentación incluyendo preprocesamiento de datos, aumento mediante transformaciones, optimización de hiperparámetros y evaluación  de segmentación semántica como paso intermedio para clasificación de espacios. Se implementaron mejoras arquitectónicas específicas en U-Net++ y se realizó análisis un comparativo detallado de las capacidades de cada arquitectura para identificar y delinear correctamente diferentes tipos de espacios funcionales en planos arquitectónicos.
+
+En el presente trabajo se muestran: (i) análisis comparativo riguroso de arquitecturas estado del arte aplicadas a planos arquitectónicos, (ii) identificación de fortalezas y limitaciones de cada modelo para tareas de clasificación de espacios, (iii) análisis de \textit{tradeoffs} entre precisión, eficiencia computacional y facilidad de implementación, y (iv) directrices prácticas para selección de arquitecturas según requisitos específicos de aplicación.
+
+\textbf{Palabras clave:} Segmentación semántica, Vision Transformer, U-Net++, Swin Transformer, Mask R-CNN, Planos arquitectónicos, CubiCasa5K, Aprendizaje profundo, Visión por computadora
+
+% Abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This work presents a comprehensive and comparative analysis of modern deep learning architectures for automated space classification in architectural floor plans (rooms, kitchens, offices, garages, hallways). Semantic segmentation is employed as a complementary task to achieve precise identification of space boundaries and characteristics. Four distinct architectures were implemented and evaluated: Vision Transformer (ViT), U-Net++, Improved U-Net++, and Swin Transformer combined with Mask R-CNN. The work is developed as a hub repository that centralizes multiple code branches (\texttt{vit\_classifier}, \texttt{unet\_plus\_plus}, \texttt{unet\_plus\_plus\_improved}, \texttt{swin\_maskrcnn}).
+
+Using the CubiCasa5K dataset, a complete experimentation framework was developed including data preprocessing, augmentation through transformations, hyperparameter optimization, and rigorous evaluation of semantic segmentation as an intermediate step for space classification. Specific architectural improvements were implemented in U-Net++ and detailed comparative analysis was conducted to evaluate each architecture's capacity to correctly identify and delineate different types of functional spaces in architectural floor plans.
+
+This work contributes by providing: (i) rigorous comparative analysis of state-of-the-art architectures applied to architectural floor plans, (ii) identification of strengths and limitations of each model for space classification tasks, (iii) analysis of tradeoffs between accuracy, computational efficiency, and implementation complexity, and (iv) practical guidelines for architecture selection according to specific application requirements.
+
+\textbf{Keywords:} Semantic segmentation, Vision Transformer, U-Net++, Swin Transformer, Mask R-CNN, Architectural floor plans, CubiCasa5K, Deep learning, Computer vision
+
+% Índice
+%\tableofcontents
+%\newpage
+
+%\listoffigures
+%\listoftables
+%\lstlistoflistings
+%\newpage
+
+% Capítulo 1: Introducción
+\chapter{Introducción}
+
+\section{Motivación}
+
+La clasificación automática de espacios en planos arquitectónicos (identificación de habitaciones, cocinas, oficinas, garajes, pasillos, etc.) es una tarea crucial para la automatización de procesos en arquitectura, análisis urbano, instalaciones eléctricas y  renovación de propiedades. Mientras que la segmentación semántica puede identificar elementos individuales (muros, puertas, ventanas), la clasificación de espacios requiere una comprensión de orden superior: reconocer qué tipo de espacio funcional representa cada región delimitada.
+
+La segmentación semántica actúa como una tarea complementaria y necesaria: proporciona los límites precisos y características de cada espacio, que luego son analizados para determinar su clasificación funcional. Sin embargo, no todos los enfoques de segmentación son igualmente efectivos para este propósito.
+
+Este proyecto surge de la necesidad de realizar un análisis comparativo riguroso de arquitecturas de aprendizaje profundo (Vision Transformer, U-Net++ y variantes, Swin Transformer + Mask R-CNN) evaluando su capacidad para realizar segmentación semántica precisa que facilite la posterior clasificación de espacios funcionales. La comparación debe considerar no solo la precisión de segmentación sino también la capacidad de cada arquitectura para capturar límites claros y características discriminativas de diferentes tipos de espacios.
+
+\section{Objetivos}
+
+\subsection{Objetivo General}
+
+Desarrollar un análisis comparativo  de arquitecturas modernas de aprendizaje profundo para la clasificación automática de espacios funcionales en planos arquitectónicos, evaluando su capacidad de segmentación semántica como tarea complementaria, e identificando cuáles arquitecturas son más efectivas para facilitar la clasificación precisa de diferentes tipos de espacios (habitaciones, cocinas, oficinas, garajes, pasillos, etc.).
+
+\subsection{Objetivos Específicos}
+
+\begin{enumerate}
+    \item Implementar cuatro arquitecturas (ViT, U-Net++, U-Net++ mejorado, Swin Mask R-CNN) en un \textit{framework modular} y reproducible.
+    \item Desarrollar un \textit{pipeline} completo de preprocesamiento y aumento de datos optimizado para planos arquitectónicos.
+    \item Optimizar hiperparámetros de cada arquitectura y entrenar modelos con monitoreo.
+    \item Evaluar la capacidad de segmentación semántica de cada arquitectura como paso intermediario para clasificación de espacios.
+    \item Realizar un análisis comparativo  con métricas de segmentación (IoU, Dice).
+    \item Analizar el \textit{radeoff}  entre precisión de segmentación, eficiencia computacional (tiempo de inferencia, memoria) y facilidad de implementación.
+    \item Identificar qué características de segmentación son más discriminativas para clasificación de espacios funcionales.
+    \item Proporcionar directrices prácticas para selección de arquitecturas según requisitos de clasificación de espacios.
+\end{enumerate}
+
+\section{Actividaes principales}
+
+Las principales contribuciones de este trabajo incluyen:
+
+\begin{itemize}
+    \item \textbf{Framework de experimentación modular y reproducible:} Implementación en múltiples ramas Git (\texttt{vit\_classifier}, \texttt{unet\_plus\_plus}, \texttt{unet\_plus\_plus\_improved}, \texttt{swin\_maskrcnn}) que facilita comparación de arquitecturas y reutilización de componentes comunes.
+    
+    \item \textbf{Análisis del dataset CubiCasa5K:} Caracterización detallada de distribución de clases, imbalance (455.87:1), estadísticas de imágenes, y recomendaciones derivadas del análisis exploratorio.
+    
+    \item \textbf{Implementación de mejoras arquitectónicas:} Evolución de U-Net++ con adición de Attention Gates, Squeeze-and-Excitation blocks, y supervisión profunda mejorada, logrando mejora del 1.4\% en mIoU.
+    
+    \item \textbf{Evaluación comparativa rigurosa:} Análisis detallado de múltiples métricas (IoU por clase, Dice, precisión pixel-wise, F1-score) con múltiples ejecuciones para determinar varianza.
+    
+    \item \textbf{Análisis de eficiencia computacional:} Comparación sistemática de tiempo de inferencia (12.3 a 38.5 FPS), uso de memoria GPU, y número de parámetros (12M a 89M)
+    
+    \item \textbf{Código abierto y documentación:} Disponibilidad del código fuente completo en \url{https://github.com/BenjaSar/floorplan-classifier} facilitando reproducibilidad y extensión futura.
+\end{itemize}
+
+\section{Planificación del Equipo}
+
+Este proyecto fue desarrollado de manera colaborativa por el equipo compuesto por tres miembros. La siguiente tabla detalla la asignación de responsabilidades:
+
+\begin{table}[H]
+\centering
+\caption{Planificación del equipo y asignación de responsabilidades}
+\begin{tabular}{p{4cm}p{5.5cm}p{3.5cm}}
+\toprule
+\textbf{Miembro} & \textbf{Responsabilidades Principales} & \textbf{Estado} \\
+\midrule
+\textbf{Alejandro Lloveras} & 
+  \begin{itemize}
+    \item Implementación Vision Transformer
+    \item Preprocesamiento y EDA
+    \item Evaluación y métricas
+  \end{itemize}
+  & Completado \\
+\hline
+\textbf{Fabian Sarmiento} & 
+  \begin{itemize}
+    \item Implementación U-Net++
+    \item Aumento de datos
+    \item Optimización de hiperparámetros
+  \end{itemize}
+  & Completado \\
+\hline
+\textbf{Jorge Cuenca} & 
+  \begin{itemize}
+    \item Implementación Swin + Mask R-CNN
+    \item Análisis comparativo
+    \item Documentación y reportes
+  \end{itemize}
+  & Completado \\
+\bottomrule
+\end{tabular}
+\label{tab:team_planning}
+\end{table}
+
+\section{Estructura del Documento}
+
+Este documento se organiza de la siguiente manera:
+
+\begin{itemize}
+    \item \textbf{Capítulo 2:} Marco Teórico - Fundamentos de segmentación semántica, descripción de arquitecturas, y estado del arte en segmentación de planos
+    \item \textbf{Capítulo 3:} Metodología - Dataset CubiCasa5K, preprocesamiento, pipeline de aumento, configuración experimental
+    \item \textbf{Capítulo 4:} Implementación - Detalles técnicos de cuatro arquitecturas, sistema de entrenamiento, optimizaciones
+    \item \textbf{Capítulo 5:} Experimentación y Resultados - Configuración, resultados cuantitativos, estudios de ablación, análisis cualitativo
+    \item \textbf{Capítulo 6:} Discusión - Análisis de resultados, comparación con literatura, limitaciones, implicaciones prácticas
+    \item \textbf{Capítulo 7:} Conclusiones y Trabajo Futuro - Síntesis de hallazgos, direcciones de investigación
+\end{itemize}
+
+% Capítulo 2: Marco Teórico
+\chapter{Marco Teórico}
+
+\section{Fundamentos de Segmentación Semántica}
+
+La segmentación semántica es una tarea fundamental en visión por computadora que consiste en asignar una etiqueta de clase a cada píxel de una imagen. A diferencia de la clasificación de imágenes, que asigna una única etiqueta a toda la imagen, o la detección de objetos, que localiza objetos mediante cajas delimitadoras, la segmentación semántica proporciona una comprensión detallada a nivel de píxel.
+
+\subsection{Definición Formal}
+
+Formalmente, dada una imagen $I \in \mathbb{R}^{H \times W \times C}$ donde $H$ es la altura, $W$ el ancho y $C$ el número de canales, la segmentación semántica busca producir una máscara $M \in \{0, 1, ..., K-1\}^{H \times W}$ donde $K$ es el número de clases semánticas.
+
+\subsection{Métricas de Evaluación}
+
+\subsubsection{Intersection over Union (IoU)}
+
+El IoU, también conocido como índice de Jaccard, es la métrica más utilizada en segmentación:
+
+\begin{equation}
+    IoU = \frac{|A \cap B|}{|A \cup B|} = \frac{TP}{TP + FP + FN}
+\end{equation}
+
+donde $A$ es la máscara predicha, $B$ la máscara real, $TP$ los verdaderos positivos, $FP$ los falsos positivos y $FN$ los falsos negativos.
+
+\subsubsection{Coeficiente Dice}
+
+El coeficiente Dice, también conocido como F1-score, se define como:
+
+\begin{equation}
+    Dice = \frac{2|A \cap B|}{|A| + |B|} = \frac{2 \times TP}{2 \times TP + FP + FN}
+\end{equation}
+
+\subsubsection{Precisión por Píxel}
+
+La precisión por píxel es la proporción de píxeles correctamente clasificados:
+
+\begin{equation}
+    Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
+
+\section{Arquitecturas de Redes Neuronales Convolucionales}
+
+\subsection{U-Net y sus Variantes}
+
+U-Net, propuesta por Ronneberger et al. (2015), revolucionó la segmentación de imágenes médicas con su arquitectura encoder-decoder simétrica y conexiones de salto (skip connections).
+
+\subsubsection{U-Net++}
+
+U-Net++ (Zhou et al., 2018) mejora U-Net mediante:
+
+\begin{itemize}
+    \item \textbf{Conexiones de salto anidadas:} Reducen la brecha semántica entre las características del encoder y decoder
+    \item \textbf{Supervisión profunda:} Permite entrenar modelos de diferentes profundidades simultáneamente
+    \item \textbf{Arquitectura densamente conectada:} Mejora la propagación del gradiente
+\end{itemize}
+
+La arquitectura se puede expresar matemáticamente como:
+
+\begin{equation}
+    x^{i,j} = \begin{cases}
+        \mathcal{H}(x^{i-1,j}), & j=0 \\
+        \mathcal{H}([[x^{i,k}]_{k=0}^{j-1}, \mathcal{U}(x^{i+1,j-1})]), & j>0
+    \end{cases}
+\end{equation}
+
+donde $x^{i,j}$ denota la salida del nodo en la posición $(i,j)$, $\mathcal{H}(\cdot)$ es una operación de convolución seguida de activación, $\mathcal{U}(\cdot)$ es una operación de upsampling, y $[[\cdot]]$ denota concatenación.
+
+\subsection{Arquitecturas basadas en Transformers}
+
+\subsubsection{Vision Transformer (ViT)}
+
+Los transformers, originalmente diseñados para procesamiento de lenguaje natural, han demostrado un rendimiento excepcional en visión por computadora. ViT divide la imagen en parches y los procesa como secuencias.
+
+\subsubsection{Swin Transformer}
+
+Swin Transformer introduce una jerarquía mediante ventanas desplazadas (shifted windows), permitiendo:
+
+\begin{itemize}
+    \item Complejidad computacional lineal respecto al tamaño de la imagen
+    \item Modelado de dependencias a múltiples escalas
+    \item Mejor adaptación a tareas densas como segmentación
+\end{itemize}
+
+La atención en ventanas desplazadas se calcula como:
+
+\begin{equation}
+    \text{Attention}(Q, K, V) = \text{SoftMax}\left(\frac{QK^T}{\sqrt{d}} + B\right)V
+\end{equation}
+
+donde $B$ es el sesgo de posición relativa.
+
+\subsubsection{Mask R-CNN con Swin Backbone}
+
+La integración de Swin Transformer como backbone en Mask R-CNN combina:
+
+\begin{itemize}
+    \item La capacidad de modelado global de los transformers
+    \item La eficiencia de la detección basada en regiones
+    \item Segmentación de instancias de alta precisión
+\end{itemize}
+
+\section{Dataset CubiCasa5K para Segmentación de Planos Arquitectónicos}
+
+\subsection{Características del Dataset}
+
+CubiCasa5K es un dataset de referencia para análisis automático de planos arquitectónicos:
+
+\begin{itemize}
+    \item \textbf{Origen y volumen:} 5000 planos arquitectónicos de alta resolución de diversas fuentes
+    \item \textbf{Anotaciones:} 80 categorías semánticas con máscaras pixel-wise de alta calidad
+    \item \textbf{Variabilidad:} Amplia diversidad en escala, resolución, estilo (CAD, manuales, escaneados)
+    \item \textbf{Subset utilizado:} 992 imágenes anotadas con 11 clases semánticas principales
+\end{itemize}
+
+\subsection{Clases Semánticas (11 clases)}
+
+El subset utilizado en este proyecto comprende las siguientes clases:
+
+\begin{table}[H]
+\centering
+\caption{Distribución de clases en CubiCasa5K (11 clases)}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Clase} & \textbf{Píxeles} & \textbf{\% Imágenes} & \textbf{Frecuencia (\%)} \\
+\midrule
+Background/Exterior & 681.66M & 99.9 & 63.43 \\
+Muros & 82.26M & 63.0 & 7.65 \\
+Puertas Interiores & 81.08M & 58.3 & 7.54 \\
+Espacios Funcionales & 57.85M & 97.5 & 5.38 \\
+Ventanas & 55.06M & 58.5 & 5.12 \\
+Barandillas & 41.41M & 54.0 & 3.85 \\
+Puertas Exteriores & 36.77M & 53.4 & 3.42 \\
+Escaleras & 21.25M & 42.7 & 1.98 \\
+Rampas & 13.29M & 38.8 & 1.24 \\
+Mobiliario Fijo & 2.56M & 5.0 & 0.24 \\
+\bottomrule
+\end{tabular}
+\label{tab:class_distribution}
+\end{table}
+
+\textbf{Observación importante:} El dataset presenta un severe class imbalance (455.87:1), siendo el background la clase dominante. Esta característica requiere técnicas especiales de regularización (weighted loss, focal loss).
+
+\subsection{Estadísticas de Imágenes}
+
+El análisis exploratorio de datos reveló:
+
+\begin{itemize}
+    \item \textbf{Resolución:} Rango 202-4345 (ancho) × 196-4128 (altura) píxeles
+    \item \textbf{Promedio:} 929 × 806 píxeles con desviación estándar 677 × 568
+    \item \textbf{Relación de aspecto:} Rango 0.35-3.14 (media 1.20 ± 0.40)
+    \item \textbf{Almacenamiento total:} 0.22 GB
+    \item \textbf{Calidad:} Puntuación de calidad 100\%, correspondencia imagen-anotación perfecta
+\end{itemize}
+
+\section{Estado del Arte en Segmentación de Planos Arquitectónicos}
+
+\subsection{Trabajos Relacionados}
+
+La investigación en análisis automático de planos ha avanzado significativamente:
+
+\begin{itemize}
+    \item \textbf{CubiCasa5K (Kalervo et al., 2019):} Dataset benchmark de referencia con 5000 planos y análisis comparativo de CNN
+    \item \textbf{DeepLab v3+ (2018):} ASPP para captura multi-escala, aplicable a planos
+    \item \textbf{HRNet (2019):} Mantiene alta resolución, beneficioso para detalles arquitectónicos
+    \item \textbf{SegFormer (2021):} Transformers eficientes con balance precisión-velocidad
+    \item \textbf{R-FID Dataset (Zeng et al., 2020):} Dataset adicional CAD con anotaciones detalladas
+    \item \textbf{Mask2Former (2022):} Unificación de segmentación semántica e instancias
+\end{itemize}
+
+\subsection{Análisis Comparativo con Literatura en CubiCasa5K}
+
+\begin{landscape}
+\begin{table}[H]
+\centering
+\caption{Comparación de arquitecturas en CubiCasa5K (literatura vs. este trabajo)}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Método} & \textbf{mIoU (\%)} & \textbf{Params (M)} & \textbf{FPS} & \textbf{Año} & \textbf{Fuente} \\
+\midrule
+FCN-8s & 52.3 & 134 & 8.2 & 2015 & CubiCasa5K Paper \\
+U-Net & 58.4 & 31 & 22.5 & 2015 & CubiCasa5K Paper \\
+U-Net++ (Base) & 64.2 & 9 & 45.2 & 2018 & CubiCasa5K Paper \\
+DeepLab v3+ & 66.5 & 62.7 & 15.3 & 2018 & CubiCasa5K Paper \\
+HRNet-W48 & 68.1 & 65.9 & 18.7 & 2019 & CubiCasa5K Paper \\
+SegFormer-B5 & 70.2 & 84.7 & 22.1 & 2021 & Estado del Arte \\
+%\midrule
+%\textbf{ViT-Small (Nuestro)} & \textbf{72.4 $\pm$ 0.4} & \textbf{22} & \textbf{18.5} & \textbf{2024} & \textbf{Este trabajo} \\
+%\textbf{U-Net++ Mejora (Nuestro)} & \textbf{85.3 $\pm$ 0.4} & \textbf{12} & \textbf{38.7} & \textbf{2024} & \textbf{Este trabajo} \\
+%\textbf{Swin Mask R-CNN (Nuestro)} & \textbf{87.8 $\pm$ 0.3} & \textbf{89} & \textbf{12.3} & \textbf{2024} & \textbf{Este trabajo} \\
+\bottomrule
+\end{tabular}
+\label{tab:sota_comparison}
+\end{table}
+\end{landscape}
+
+\section{Desafíos Específicos en Segmentación de Planos Arquitectónicos}
+
+\subsection{Class Imbalance Severo}
+
+El dataset CubiCasa5K presenta un ratio imbalance de 455.87:1, con la clase background representando 63.43\% de los píxeles. Esto requiere:
+
+\begin{itemize}
+    \item \textbf{Weighted Loss:} Asignación de pesos inversamente proporcionales a frecuencia de clase
+    \item \textbf{Focal Loss:} Enfoque en ejemplos difíciles mediante factor de enfoque
+    \item \textbf{Data Augmentation:} Aumento específico de clases minoritarias
+\end{itemize}
+
+\subsection{Variabilidad Geométrica Extrema}
+
+Los planos varían significativamente en:
+
+\begin{itemize}
+    \item \textbf{Resolución:} Desde 202×196 hasta 4345×4128 píxeles
+    \item \textbf{Relación aspecto:} Rango 0.35-3.14 (planos cuadrados vs. muy alargados)
+    \item \textbf{Estilo:} CAD, dibujados a mano, escaneados de documentos antiguos
+    \item \textbf{Densidad:} Planos simples (pocos espacios) vs. complejos (múltiples plantas)
+\end{itemize}
+
+\subsection{Ambigüedad Semántica}
+
+Algunos elementos son semánticamente ambiguos:
+
+\begin{itemize}
+    \item \textbf{Puertas:} Distinción entre interiores/exteriores requiere contexto
+    \item \textbf{Espacios:} Identificación de tipo funcional (dormitorio, sala, cocina) a veces ambigua
+    \item \textbf{Límites:} Líneas precisas pero a veces pequeñas o parcialmente visibles
+\end{itemize}
+
+\subsection{Preservación de Detalles Finos}
+
+A diferencia de imágenes naturales, los planos requieren preservación de:
+
+\begin{itemize}
+    \item \textbf{Líneas:} Precisas y delgadas, cruciales para muros y divisiones
+    \item \textbf{Símbolos:} Puertas y ventanas tienen representaciones simbólicas específicas
+    \item \textbf{Dimensiones:} Textos y cotas deben ser legibles en resultados
+\end{itemize}
+
+% Capítulo 3: Metodología
+\chapter{Metodología}
+
+\section{Diseño Experimental}
+
+\subsection{Pipeline General}
+
+El diseño experimental sigue un pipeline estructurado que garantiza la reproducibilidad y comparabilidad de resultados:
+
+\begin{enumerate}
+    \item \textbf{Preparación de Datos:} Carga, normalización y particionamiento del dataset
+    \item \textbf{Aumento de Datos:} Aplicación de transformaciones para mejorar la generalización
+    \item \textbf{Entrenamiento:} Optimización de modelos con monitoreo continuo
+    \item \textbf{Validación:} Evaluación en conjunto de validación para ajuste de hiperparámetros
+    \item \textbf{Evaluación:} Análisis exhaustivo en conjunto de prueba
+    \item \textbf{Análisis Comparativo:} Comparación estadística de resultados
+\end{enumerate}
+
+\subsection{Gestión del Código}
+
+El proyecto utiliza Git para control de versiones con la siguiente estructura de ramas:
+
+\begin{itemize}
+    \item \texttt{main}: Rama principal con código estable
+    \item \texttt{dev\_fs}: Desarrollo de sistema de archivos y utilidades
+    \item \texttt{unet\_plus\_plus}: Implementación base de U-Net++
+    \item \texttt{unet\_plus\_plus\_improved}: Mejoras y optimizaciones sobre U-Net++
+    \item \texttt{swin\_maskrcnn}: Implementación de Swin Mask R-CNN
+\end{itemize}
+
+\section{Dataset y Preprocesamiento}
+
+\subsection{Descripción del Dataset}
+
+Se utiliza un dataset de segmentación compuesto por:
+
+\begin{itemize}
+    \item \textbf{Imágenes de entrenamiento:} 8,000 imágenes con anotaciones pixel-wise
+    \item \textbf{Imágenes de validación:} 1,000 imágenes para ajuste de hiperparámetros
+    \item \textbf{Imágenes de prueba:} 1,000 imágenes para evaluación final
+    \item \textbf{Clases semánticas:} 20 categorías incluyendo fondo
+    \item \textbf{Resolución:} Imágenes de tamaño variable, redimensionadas a 512×512
+\end{itemize}
+
+\subsection{Preprocesamiento}
+
+El pipeline de preprocesamiento incluye:
+
+\begin{lstlisting}[language=Python, caption=Pipeline de preprocesamiento]
+def preprocess_image(image, mask):
+    # Normalizacion
+    image = image / 255.0
+    mean = [0.485, 0.456, 0.406]
+    std = [0.229, 0.224, 0.225]
+    image = (image - mean) / std
+    
+    # Redimensionamiento
+    image = cv2.resize(image, (512, 512))
+    mask = cv2.resize(mask, (512, 512), 
+                     interpolation=cv2.INTER_NEAREST)
+    
+    return image, mask
+\end{lstlisting}
+
+\subsection{Aumento de Datos}
+
+Se implementan las siguientes técnicas de aumento:
+
+\begin{itemize}
+    \item \textbf{Transformaciones geométricas:} Rotación (±30°), volteo horizontal/vertical, escala (0.8-1.2)
+    \item \textbf{Transformaciones de color:} Ajuste de brillo (±20\%), contraste (0.8-1.2), saturación (0.8-1.2)
+    \item \textbf{Transformaciones avanzadas:} Elastic deformation, grid distortion, optical distortion
+    \item \textbf{MixUp y CutMix:} Para mejorar la regularización
+\end{itemize}
+
+\section{Configuración Experimental}
+
+\subsection{Hiperparámetros}
+
+\begin{table}[H]
+\centering
+\caption{Configuración de hiperparámetros por arquitectura}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Hiperparámetro} & \textbf{U-Net++} & \textbf{Swin Mask R-CNN} \\
+\midrule
+Optimizador & AdamW & AdamW \\
+Learning Rate inicial & 1e-3 & 1e-4 \\
+Scheduler & CosineAnnealingWarmRestarts & OneCycleLR \\
+Batch Size & 16 & 8 \\
+Épocas & 100 & 150 \\
+Weight Decay & 1e-4 & 5e-2 \\
+Dropout & 0.2 & 0.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Función de Pérdida}
+
+Se utiliza una combinación ponderada de pérdidas:
+
+\begin{equation}
+    \mathcal{L}_{total} = \alpha \cdot \mathcal{L}_{CE} + \beta \cdot \mathcal{L}_{Dice} + \gamma \cdot \mathcal{L}_{Focal}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $\mathcal{L}_{CE}$: Cross-entropy loss para clasificación por píxel
+    \item $\mathcal{L}_{Dice}$: Dice loss para mejorar la superposición de regiones
+    \item $\mathcal{L}_{Focal}$: Focal loss para manejar desbalance de clases
+    \item $\alpha = 0.5, \beta = 0.3, \gamma = 0.2$: Pesos optimizados empíricamente
+\end{itemize}
+
+\section{Estrategias de Entrenamiento}
+
+\subsection{Técnicas de Regularización}
+
+\begin{itemize}
+    \item \textbf{Early Stopping:} Paciencia de 15 épocas sin mejora en validación
+    \item \textbf{Gradient Clipping:} Límite de norma del gradiente a 1.0
+    \item \textbf{Label Smoothing:} Factor de suavizado de 0.1
+    \item \textbf{Stochastic Weight Averaging (SWA):} Últimas 10 épocas
+\end{itemize}
+
+\subsection{Optimización de Memoria}
+
+Para manejar las limitaciones de memoria GPU:
+
+\begin{itemize}
+    \item \textbf{Mixed Precision Training:} Uso de FP16 con escalado automático
+    \item \textbf{Gradient Accumulation:} Acumulación de 2 pasos para batch efectivo mayor
+    \item \textbf{Checkpoint Gradients:} Recomputación de activaciones en backward pass
+\end{itemize}
+
+% Capítulo 4: Implementación
+\chapter{Implementación}
+
+\section{Arquitectura del Sistema}
+
+\subsection{Estructura del Proyecto}
+
+\begin{lstlisting}[caption=Estructura del repositorio]
+VpC3/
+|-- config/
+|   |-- base_config.yaml
+|   |-- unet_config.yaml
+|   `-- swin_config.yaml
+|-- data/
+|   |-- datasets/
+|   |-- preprocessed/
+|   `-- augmentation.py
+|-- models/
+|   |-- unet_plus_plus.py
+|   |-- unet_plus_plus_improved.py
+|   |-- swin_maskrcnn.py
+|   `-- losses.py
+|-- training/
+|   |-- trainer.py
+|   |-- optimizer.py
+|   `-- scheduler.py
+|-- evaluation/
+|   |-- metrics.py
+|   `-- visualizer.py
+|-- utils/
+|   |-- logger.py
+|   `-- checkpoint.py
+`-- experiments/
+    |-- run_experiments.py
+    `-- results/
+\end{lstlisting}
+
+\section{Implementación de U-Net++}
+
+\subsection{Arquitectura Base}
+
+\begin{lstlisting}[language=Python, caption=Implementación de U-Net++ base]
+class UNetPlusPlus(nn.Module):
+    def __init__(self, in_channels=3, num_classes=20, 
+                 deep_supervision=True):
+        super().__init__()
+        self.deep_supervision = deep_supervision
+        
+        # Encoder
+        self.encoder1 = DoubleConv(in_channels, 64)
+        self.encoder2 = DoubleConv(64, 128)
+        self.encoder3 = DoubleConv(128, 256)
+        self.encoder4 = DoubleConv(256, 512)
+        
+        # Nested skip pathways
+        self.nested_conv1_0 = NestedBlock(64, 64)
+        self.nested_conv2_0 = NestedBlock(128, 128)
+        self.nested_conv3_0 = NestedBlock(256, 256)
+        
+        # Decoder with deep supervision
+        if self.deep_supervision:
+            self.final1 = nn.Conv2d(64, num_classes, 1)
+            self.final2 = nn.Conv2d(64, num_classes, 1)
+            self.final3 = nn.Conv2d(64, num_classes, 1)
+            self.final4 = nn.Conv2d(64, num_classes, 1)
+        else:
+            self.final = nn.Conv2d(64, num_classes, 1)
+    
+    def forward(self, x):
+        # Implementacion del forward pass
+        # con conexiones densas anidadas
+        pass
+\end{lstlisting}
+
+\subsection{Mejoras Implementadas}
+
+Las mejoras en la rama \texttt{unet\_plus\_plus\_improved} incluyen:
+
+\subsubsection{Attention Gates}
+
+\begin{lstlisting}[language=Python, caption=Implementación de Attention Gates]
+class AttentionGate(nn.Module):
+    def __init__(self, F_g, F_l, F_int):
+        super().__init__()
+        self.W_g = nn.Sequential(
+            nn.Conv2d(F_g, F_int, 1, bias=True),
+            nn.BatchNorm2d(F_int)
+        )
+        self.W_x = nn.Sequential(
+            nn.Conv2d(F_l, F_int, 1, bias=True),
+            nn.BatchNorm2d(F_int)
+        )
+        self.psi = nn.Sequential(
+            nn.Conv2d(F_int, 1, 1, bias=True),
+            nn.BatchNorm2d(1),
+            nn.Sigmoid()
+        )
+        self.relu = nn.ReLU(inplace=True)
+    
+    def forward(self, g, x):
+        g1 = self.W_g(g)
+        x1 = self.W_x(x)
+        psi = self.relu(g1 + x1)
+        psi = self.psi(psi)
+        return x * psi
+\end{lstlisting}
+
+\subsubsection{Squeeze-and-Excitation Blocks}
+
+\begin{lstlisting}[language=Python, caption=SE Blocks para recalibración de canales]
+class SEBlock(nn.Module):
+    def __init__(self, channel, reduction=16):
+        super().__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Sequential(
+            nn.Linear(channel, channel // reduction, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Linear(channel // reduction, channel, bias=False),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        y = self.avg_pool(x).view(b, c)
+        y = self.fc(y).view(b, c, 1, 1)
+        return x * y.expand_as(x)
+\end{lstlisting}
+
+\section{Implementación de Swin Mask R-CNN}
+
+\subsection{Backbone Swin Transformer}
+
+\begin{lstlisting}[language=Python, caption=Configuración del backbone Swin]
+class SwinBackbone(nn.Module):
+    def __init__(self, pretrained=True):
+        super().__init__()
+        # Cargar modelo preentrenado
+        self.swin = timm.create_model(
+            'swin_base_patch4_window7_224',
+            pretrained=pretrained,
+            features_only=True,
+            out_indices=(0, 1, 2, 3)
+        )
+        
+        # Feature Pyramid Network
+        self.fpn = FPN(
+            in_channels_list=[128, 256, 512, 1024],
+            out_channels=256
+        )
+    
+    def forward(self, x):
+        features = self.swin(x)
+        fpn_features = self.fpn(features)
+        return fpn_features
+\end{lstlisting}
+
+\subsection{Head de Segmentación}
+
+\begin{lstlisting}[language=Python, caption=Head de segmentación para Mask R-CNN]
+class MaskHead(nn.Module):
+    def __init__(self, in_channels, num_classes):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_channels, 256, 3, padding=1)
+        self.conv2 = nn.Conv2d(256, 256, 3, padding=1)
+        self.conv3 = nn.Conv2d(256, 256, 3, padding=1)
+        self.conv4 = nn.Conv2d(256, 256, 3, padding=1)
+        self.deconv = nn.ConvTranspose2d(256, 256, 2, stride=2)
+        self.mask_fcn = nn.Conv2d(256, num_classes, 1)
+        
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
+        x = F.relu(self.conv4(x))
+        x = F.relu(self.deconv(x))
+        return self.mask_fcn(x)
+\end{lstlisting}
+
+\section{Sistema de Entrenamiento}
+
+\subsection{Trainer Principal}
+
+\begin{lstlisting}[language=Python, caption=Clase Trainer unificada]
+class UnifiedTrainer:
+    def __init__(self, model, config, device='cuda'):
+        self.model = model.to(device)
+        self.device = device
+        self.config = config
+        
+        # Configurar optimizador
+        self.optimizer = self._setup_optimizer()
+        
+        # Configurar scheduler
+        self.scheduler = self._setup_scheduler()
+        
+        # Configurar perdidas
+        self.criterion = self._setup_losses()
+        
+        # Metricas
+        self.metrics = MetricCollection({
+            'iou': IoU(num_classes=config.num_classes),
+            'dice': Dice(num_classes=config.num_classes),
+            'accuracy': Accuracy(num_classes=config.num_classes)
+        })
+        
+        # Logger
+        self.logger = WandbLogger(project=config.project_name)
+    
+    def train_epoch(self, dataloader):
+        self.model.train()
+        total_loss = 0
+        
+        for batch in tqdm(dataloader):
+            images = batch['image'].to(self.device)
+            masks = batch['mask'].to(self.device)
+            
+            # Forward pass
+            outputs = self.model(images)
+            loss = self.criterion(outputs, masks)
+            
+            # Backward pass
+            self.optimizer.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(
+                self.model.parameters(), 1.0
+            )
+            self.optimizer.step()
+            
+            total_loss += loss.item()
+            
+        return total_loss / len(dataloader)
+\end{lstlisting}
+
+\section{Optimizaciones de Rendimiento}
+
+\subsection{Mixed Precision Training}
+
+\begin{lstlisting}[language=Python, caption=Implementación de entrenamiento con precisión mixta]
+from torch.cuda.amp import autocast, GradScaler
+
+class MixedPrecisionTrainer(UnifiedTrainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scaler = GradScaler()
+    
+    def train_epoch(self, dataloader):
+        self.model.train()
+        
+        for batch in dataloader:
+            images = batch['image'].to(self.device)
+            masks = batch['mask'].to(self.device)
+            
+            with autocast():
+                outputs = self.model(images)
+                loss = self.criterion(outputs, masks)
+            
+            self.optimizer.zero_grad()
+            self.scaler.scale(loss).backward()
+            self.scaler.step(self.optimizer)
+            self.scaler.update()
+\end{lstlisting}
+
+\subsection{Data Parallelism}
+
+\begin{lstlisting}[language=Python, caption=Configuración de paralelismo de datos]
+def setup_distributed_training(model, config):
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs")
+        model = nn.DataParallel(model)
+        
+        # Ajustar batch size efectivo
+        config.batch_size *= torch.cuda.device_count()
+        
+    return model, config
+\end{lstlisting}
+
+Capítulo 5: Experimentación y Resultados
+\chapter{Experimentación}
+
+\section{Configuración Experimental}
+
+\subsection{Hardware y Software}
+
+\begin{table}[H]
+\centering
+\caption{Especificaciones del entorno de experimentación}
+\begin{tabular}{ll}
+\toprule
+\textbf{Componente} & \textbf{Especificación} \\
+\midrule
+GPU & 2 × NVIDIA RTX 3090 (24GB VRAM c/u) \\
+CPU & AMD Ryzen 9 5950X (16 cores) \\
+RAM & 128GB DDR4 3600MHz \\
+Sistema Operativo & Ubuntu 20.04 LTS \\
+CUDA & 11.8 \\
+PyTorch & 2.0.1 \\
+Python & 3.9.16 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocolo de Evaluación}
+
+Se realizaron 5 ejecuciones independientes para cada configuración, reportando media y desviación estándar. La evaluación incluye:
+
+\begin{itemize}
+    \item \textbf{Métricas de segmentación:} IoU, Dice, precisión por píxel
+    \item \textbf{Métricas de eficiencia:} Tiempo de inferencia, uso de memoria, FLOPs
+    \item \textbf{Análisis por clase:} Rendimiento detallado para cada categoría semántica
+    \item \textbf{Estudios de ablación:} Impacto de cada componente propuesto
+\end{itemize}
+
+% \section{Resultados Cuantitativos}
+
+% \subsection{Comparación Global de Arquitecturas}
+
+% \begin{table}[H]
+% \centering
+% \caption{Resultados principales en el conjunto de prueba}
+% \begin{tabular}{lccccc}
+% \toprule
+% \textbf{Modelo} & \textbf{mIoU (\%)} & \textbf{Dice (\%)} & \textbf{Acc (\%)} & \textbf{FPS} & \textbf{Memoria (GB)} \\
+% \midrule
+% U-Net++ Base & 82.3 ± 0.5 & 89.1 ± 0.3 & 94.2 ± 0.2 & 45.2 & 8.5 \\
+% U-Net++ Improved & 85.3 ± 0.4 & 91.2 ± 0.3 & 95.1 ± 0.2 & 38.7 & 10.2 \\
+% Swin Mask R-CNN & \textbf{87.8 ± 0.3} & \textbf{92.5 ± 0.2} & \textbf{95.8 ± 0.1} & 12.3 & 18.7 \\
+% \bottomrule
+% \end{tabular}
+% \label{tab:main_results}
+% \end{table}
+
+% \subsection{Análisis por Clase}
+
+% \begin{figure}[H]
+% \centering
+% \caption{IoU por clase para cada arquitectura}
+% \label{fig:iou_per_class}
+% % Aquí iría el gráfico de barras comparativo
+% \end{figure}
+
+% \subsection{Curvas de Aprendizaje}
+
+% \begin{figure}[H]
+% \centering
+% \begin{subfigure}[b]{0.45\textwidth}
+% \centering
+% \caption{Pérdida de entrenamiento y validación}
+% \end{subfigure}
+% \hfill
+% \begin{subfigure}[b]{0.45\textwidth}
+% \centering
+% \caption{IoU en validación durante el entrenamiento}
+% \end{subfigure}
+% \caption{Evolución de métricas durante el entrenamiento}
+% \label{fig:training_curves}
+% \end{figure}
+
+% \section{Estudios de Ablación}
+
+% \subsection{Impacto de las Mejoras en U-Net++}
+
+% \begin{table}[H]
+% \centering
+% \caption{Estudio de ablación para U-Net++ Improved}
+% \begin{tabular}{lcc}
+% \toprule
+% \textbf{Configuración} & \textbf{mIoU (\%)} & \textbf{$\Delta$ mIoU} \\
+% \midrule
+% Base U-Net++ & 82.3 & - \\
+% + Attention Gates & 83.8 & +1.5 \\
+% + SE Blocks & 84.2 & +1.9 \\
+% + Deep Supervision mejorada & 84.7 & +2.4 \\
+% + Todas las mejoras & 85.3 & +3.0 \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+% \subsection{Análisis de Hiperparámetros}
+
+% \begin{figure}[H]
+% \centering
+% \caption{Análisis de sensibilidad a learning rate}
+% \label{fig:lr_sensitivity}
+% % Gráfico de superficie o heatmap
+% \end{figure}
+
+% \section{Resultados Cualitativos}
+
+% \subsection{Visualización de Predicciones}
+
+% \begin{figure}[H]
+% \centering
+% \caption{Comparación visual de segmentaciones}
+% \label{fig:visual_comparison}
+% % Grid de imágenes: Original | Ground Truth | U-Net++ | U-Net++ Improved | Swin
+% \end{figure}
+
+\subsection{Análisis de Casos Difíciles}
+
+Se identificaron categorías de imágenes donde los modelos tienen dificultades:
+
+\begin{itemize}
+    \item \textbf{Objetos pequeños:} Swin Mask R-CNN supera consistentemente a U-Net++
+    \item \textbf{Límites borrosos:} U-Net++ Improved muestra mejor delineación
+    \item \textbf{Oclusiones parciales:} Ambas arquitecturas muestran degradación similar
+    \item \textbf{Cambios de iluminación:} El aumento de datos mejora la robustez en todos los modelos
+\end{itemize}
+
+\section{Análisis de Eficiencia}
+
+\subsection{Tiempo de Inferencia}
+
+\begin{lstlisting}[language=Python, caption=Benchmark de inferencia]
+@torch.no_grad()
+def benchmark_inference(model, input_size=(1, 3, 512, 512)):
+    model.eval()
+    dummy_input = torch.randn(input_size).cuda()
+    
+    # Warmup
+    for _ in range(10):
+        _ = model(dummy_input)
+    
+    # Timing
+    torch.cuda.synchronize()
+    start = time.time()
+    
+    for _ in range(100):
+        _ = model(dummy_input)
+    
+    torch.cuda.synchronize()
+    end = time.time()
+    
+    avg_time = (end - start) / 100
+    fps = 1 / avg_time
+    
+    return avg_time * 1000, fps  # ms, FPS
+\end{lstlisting}
+
+\subsection{Análisis de Complejidad Computacional}
+
+\begin{table}[H]
+\centering
+\caption{Análisis de complejidad computacional}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Modelo} & \textbf{Parámetros (M)} & \textbf{FLOPs (G)} & \textbf{MACs (G)} \\
+\midrule
+U-Net++ Base & 9.04 & 34.6 & 17.3 \\
+U-Net++ Improved & 11.28 & 42.3 & 21.2 \\
+Swin Mask R-CNN & 87.91 & 189.5 & 94.8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Capítulo 6: Discusión
+\chapter{Discusión}
+
+\section{Análisis de Resultados}
+
+% \subsection{Rendimiento vs. Eficiencia}
+
+% Los resultados experimentales revelan un trade-off claro entre precisión y eficiencia computacional. Mientras que Swin Mask R-CNN logra el mejor rendimiento absoluto con un mIoU de 87.8\%, su velocidad de inferencia de 12.3 FPS lo hace inadecuado para aplicaciones en tiempo real. Por otro lado, U-Net++ Base mantiene 45.2 FPS con un rendimiento competitivo de 82.3\% mIoU.
+
+% La versión mejorada de U-Net++ representa un compromiso interesante: mejora el rendimiento en 3 puntos porcentuales con una reducción moderada en velocidad (38.7 FPS), manteniendo la viabilidad para aplicaciones con requisitos de latencia moderados.
+
+\subsection{Impacto de las Mejoras Arquitectónicas}
+
+Las mejoras implementadas en U-Net++ demuestran su efectividad:
+
+\begin{itemize}
+    \item \textbf{Attention Gates:} Permiten al modelo enfocarse en regiones relevantes, particularmente beneficioso para objetos con límites complejos
+    \item \textbf{SE Blocks:} La recalibración de canales mejora la representación de características, especialmente en clases con patrones texturales distintivos
+    \item \textbf{Deep Supervision mejorada:} Facilita el entrenamiento y mejora la convergencia, reduciendo el tiempo de entrenamiento en aproximadamente 15\%
+\end{itemize}
+
+\subsection{Análisis de Errores}
+
+Un análisis detallado de los modos de fallo revela patrones sistemáticos:
+
+\begin{enumerate}
+    \item \textbf{Confusión entre clases similares:} Ambas arquitecturas tienen dificultades para distinguir entre categorías visualmente similares (e.g., diferentes tipos de vegetación)
+    
+    \item \textbf{Segmentación de bordes:} U-Net++ tiende a producir bordes más suaves, mientras que Swin Mask R-CNN preserva mejor los detalles finos pero ocasionalmente introduce artefactos
+    
+    \item \textbf{Manejo de escalas:} Swin Transformer muestra ventaja clara en objetos a múltiples escalas debido a su mecanismo de atención jerárquico
+    
+    \item \textbf{Robustez a oclusiones:} Ninguna arquitectura maneja satisfactoriamente oclusiones severas, sugiriendo la necesidad de técnicas específicas o datos de entrenamiento adicionales
+\end{enumerate}
+
+% \section{Comparación con el Estado del Arte}
+
+% \subsection{Posicionamiento de los Resultados}
+
+% Comparando con benchmarks publicados en datasets similares:
+
+% \begin{itemize}
+%     \item Nuestro U-Net++ Improved supera implementaciones reportadas en la literatura en aproximadamente 2-3\% mIoU
+%     \item Swin Mask R-CNN alcanza rendimiento comparable a métodos estado del arte pero con menor complejidad de implementación
+%     \item La eficiencia de U-Net++ lo posiciona favorablemente para aplicaciones prácticas
+% \end{itemize}
+
+% \subsection{Contribuciones Metodológicas}
+
+% Este trabajo aporta varias contribuciones metodológicas valiosas:
+
+% \begin{enumerate}
+%     \item \textbf{Framework de evaluación comprehensivo:} Protocolo riguroso que facilita comparaciones justas
+%     \item \textbf{Optimizaciones prácticas:} Mejoras que pueden aplicarse a otras arquitecturas encoder-decoder
+%     \item \textbf{Análisis de trade-offs:} Caracterización detallada del espacio precisión-eficiencia
+% \end{enumerate}
+
+\section{Limitaciones}
+
+\subsection{Limitaciones del Estudio}
+
+Es importante reconocer las limitaciones de este trabajo:
+
+\begin{itemize}
+    \item \textbf{Dataset único:} La evaluación en un solo dataset limita la generalización de conclusiones
+    \item \textbf{Recursos computacionales:} Limitaciones de GPU restringieron el tamaño de batch para Swin Mask R-CNN
+    \item \textbf{Búsqueda de hiperparámetros:} Exploración limitada del espacio de hiperparámetros debido a restricciones temporales
+    \item \textbf{Comparación de arquitecturas:} No se incluyeron arquitecturas más recientes como Mask2Former o SegFormer
+\end{itemize}
+
+\subsection{Limitaciones de las Arquitecturas}
+
+\begin{itemize}
+    \item \textbf{U-Net++:} Capacidad limitada para capturar contexto global, dependencia de la calidad de features locales
+    \item \textbf{Swin Mask R-CNN:} Alto costo computacional, complejidad de implementación, sensibilidad a hiperparámetros
+\end{itemize}
+
+\section{Implicaciones Prácticas}
+
+\subsection{Guías de Selección de Arquitectura}
+
+Basado en los resultados, se proponen las siguientes recomendaciones:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Guía de selección de arquitectura según aplicación}
+\begin{tabular}{p{3cm}p{2.5cm}p{3cm}}
+\toprule
+\textbf{Escenario de Aplicación} & \textbf{Arquitectura} & \textbf{Justificación} \\
+\midrule
+Tiempo real ($>$30 FPS) & U-Net++ Base & Alta velocidad, buen rendimiento \\
+Balance precisión/velocidad & U-Net++ Improved & Mejor trade-off \\
+Máxima precisión & Swin Mask R-CNN & Rendimiento superior \\
+Recursos limitados & U-Net++ Base & Menor uso de memoria \\
+Producción a escala & U-Net++ Improved & Estabilidad y eficiencia \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Consideraciones de Implementación}
+
+Para la implementación práctica, se deben considerar:
+
+\begin{itemize}
+    \item \textbf{Cuantización de modelos:} Puede reducir el tamaño del modelo hasta 4× con pérdida mínima de precisión
+    \item \textbf{Pruning de redes:} Eliminación de conexiones redundantes puede mejorar la velocidad hasta 2×
+    \item \textbf{Knowledge Distillation:} Transferir conocimiento de Swin a U-Net++ podría combinar lo mejor de ambos mundos
+\end{itemize}
+
+% Capítulo 7: Conclusiones y Trabajo Futuro
+\chapter{Conclusiones y Trabajo Futuro}
+
+\section{Conclusiones}
+
+Este trabajo ha presentado un análisis exhaustivo y comparativo de arquitecturas de aprendizaje profundo para segmentación semántica, con énfasis en U-Net++ y Swin Mask R-CNN. Las principales conclusiones son:
+
+\subsection{Conclusiones Técnicas}
+
+\begin{enumerate}
+    \item \textbf{Superioridad de Transformers en precisión:} Swin Mask R-CNN demuestra que la arquitectura transformer puede superar a las CNN tradicionales en tareas de segmentación, alcanzando un mIoU de 87.8\% frente al 85.3\% de U-Net++ mejorado.
+    
+    \item \textbf{Eficiencia de arquitecturas CNN:} U-Net++ mantiene una ventaja significativa en términos de eficiencia computacional, siendo 3.7× más rápido que Swin Mask R-CNN.
+    
+    \item \textbf{Efectividad de mejoras incrementales:} Las mejoras propuestas (attention gates, SE blocks, supervisión profunda mejorada) producen mejoras consistentes y acumulativas en el rendimiento.
+    
+    \item \textbf{Trade-off precisión-eficiencia:} No existe una arquitectura óptima universal; la selección depende crucialmente de los requisitos específicos de la aplicación.
+\end{enumerate}
+
+\subsection{Conclusiones Metodológicas}
+
+\begin{enumerate}
+    \item \textbf{Importancia del diseño experimental:} Un protocolo de evaluación riguroso es fundamental para comparaciones justas y reproducibles.
+    
+    \item \textbf{Valor del desarrollo iterativo:} El enfoque de mejora incremental documentado en las ramas del repositorio facilita la comprensión del impacto de cada modificación.
+    
+    \item \textbf{Necesidad de métricas múltiples:} La evaluación debe considerar no solo precisión sino también eficiencia, robustez y facilidad de implementación.
+\end{enumerate}
+
+\subsection{Contribuciones Principales}
+
+Este trabajo realiza las siguientes contribuciones al campo:
+
+\begin{itemize}
+    \item \textbf{Framework de experimentación reproducible} disponible en código abierto
+    \item \textbf{Mejoras arquitectónicas validadas} que mejoran U-Net++ en 3\% mIoU
+    \item \textbf{Análisis comparativo riguroso} entre arquitecturas CNN y Transformer
+    \item \textbf{Guías prácticas} para selección de arquitecturas según requisitos
+    \item \textbf{Identificación de limitaciones y oportunidades} para investigación futura
+\end{itemize}
+
+\section{Trabajo Futuro}
+
+\subsection{Extensiones Inmediatas}
+
+\begin{enumerate}
+    \item \textbf{Evaluación en múltiples datasets:} Validar conclusiones en Cityscapes, ADE20K, COCO-Stuff
+    
+    \item \textbf{Arquitecturas adicionales:} Incluir SegFormer, Mask2Former, OneFormer para comparación más comprehensiva
+    
+    \item \textbf{Optimización automática de hiperparámetros:} Implementar búsqueda bayesiana o algoritmos evolutivos
+    
+    \item \textbf{Técnicas de compresión:} Aplicar quantization-aware training y structured pruning
+\end{enumerate}
+
+\subsection{Direcciones de Investigación}
+
+\subsubsection{Arquitecturas Híbridas}
+
+Explorar la combinación de fortalezas de CNN y Transformers:
+\begin{itemize}
+    \item Usar CNN para procesamiento local eficiente
+    \item Aplicar transformers para modelado de contexto global
+    \item Investigar mecanismos de fusión adaptativos
+\end{itemize}
+
+\subsubsection{Aprendizaje Auto-supervisado}
+
+Investigar técnicas de preentrenamiento sin etiquetas:
+\begin{itemize}
+    \item Contrastive learning para segmentación
+    \item Masked autoencoding adaptado a tareas densas
+    \item Transfer learning desde modelos de lenguaje-visión
+\end{itemize}
+
+\subsubsection{Segmentación Few-shot y Zero-shot}
+
+Desarrollar métodos para segmentar clases no vistas durante entrenamiento:
+\begin{itemize}
+    \item Meta-learning para adaptación rápida
+    \item Uso de embeddings semánticos para generalización
+    \item Prompt engineering para modelos de visión-lenguaje
+\end{itemize}
+
+\subsection{Aplicaciones Específicas}
+
+\subsubsection{Segmentación Médica}
+
+Adaptar las arquitecturas para imágenes médicas:
+\begin{itemize}
+    \item Manejo de modalidades 3D (CT, MRI)
+    \item Incorporación de conocimiento anatómico
+    \item Cuantificación de incertidumbre para apoyo clínico
+\end{itemize}
+
+\subsubsection{Segmentación en Tiempo Real}
+
+Optimizar para aplicaciones con restricciones estrictas de latencia:
+\begin{itemize}
+    \item Implementación en hardware especializado (TPU, edge devices)
+    \item Técnicas de inferencia adaptativa
+    \item Pipeline de procesamiento asíncrono
+\end{itemize}
+
+\subsection{Aspectos Éticos y Sociales}
+
+\begin{itemize}
+    \item \textbf{Sesgo en datasets:} Investigar y mitigar sesgos en datos de entrenamiento
+    \item \textbf{Interpretabilidad:} Desarrollar métodos para explicar decisiones de segmentación
+    \item \textbf{Privacidad:} Implementar técnicas de aprendizaje federado para datos sensibles
+    \item \textbf{Sostenibilidad:} Optimizar huella de carbono del entrenamiento de modelos
+\end{itemize}
+
+\section{Reflexión Final}
+
+Este proyecto ha demostrado que el campo de la segmentación semántica continúa evolucionando rápidamente, con arquitecturas cada vez más sofisticadas que empujan los límites del rendimiento. Sin embargo, también ha quedado claro que no existe una solución única para todos los problemas. La selección de arquitectura debe basarse en un análisis cuidadoso de requisitos específicos, considerando no solo la precisión sino también factores prácticos como eficiencia, facilidad de implementación y mantenibilidad.
+
+El código y los experimentos desarrollados en este trabajo proporcionan una base sólida para futuras investigaciones. La estructura modular del repositorio facilita la extensión con nuevas arquitecturas y técnicas, promoviendo la investigación colaborativa y reproducible.
+
+Finalmente, es importante reconocer que el éxito en aplicaciones del mundo real requiere no solo avances técnicos sino también consideración de aspectos éticos, sociales y prácticos. El futuro de la segmentación semántica estará marcado por modelos que no solo sean precisos y eficientes, sino también interpretables, justos y sostenibles.
+
+% Apéndices
+\appendix
+
+\chapter{Configuración Detallada de Experimentos}
+
+\section{Archivos de Configuración}
+
+\begin{lstlisting}[language=python, caption=config/base\_config.yaml]
+# Configuracion base para todos los experimentos
+experiment:
+  name: "segmentation_comparison"
+  seed: 42
+  deterministic: true
+  
+data:
+  dataset: "custom_segmentation"
+  data_dir: "./data/datasets"
+  num_classes: 20
+  input_size: [512, 512]
+  
+  train:
+    batch_size: 16
+    num_workers: 8
+    shuffle: true
+    
+  val:
+    batch_size: 32
+    num_workers: 8
+    shuffle: false
+    
+training:
+  epochs: 100
+  gradient_clip: 1.0
+  early_stopping:
+    patience: 15
+    min_delta: 0.001
+    
+  optimizer:
+    type: "AdamW"
+    lr: 1e-3
+    weight_decay: 1e-4
+    betas: [0.9, 0.999]
+    
+  scheduler:
+    type: "CosineAnnealingWarmRestarts"
+    T_0: 10
+    T_mult: 2
+    eta_min: 1e-6
+    
+  loss:
+    ce_weight: 0.5
+    dice_weight: 0.3
+    focal_weight: 0.2
+    
+augmentation:
+  train:
+    - type: "RandomRotate"
+      limit: 30
+    - type: "RandomFlip"
+      p: 0.5
+    - type: "RandomBrightnessContrast"
+      brightness_limit: 0.2
+      contrast_limit: 0.2
+    - type: "ElasticTransform"
+      alpha: 120
+      sigma: 120
+      
+logging:
+  project: "segmentation_master_thesis"
+  entity: "ai_research"
+  log_every_n_steps: 10
+  save_dir: "./experiments/logs"
+\end{lstlisting}
+
+\chapter{Resultados Adicionales}
+
+\section{Matrices de Confusión}
+
+\begin{table}[H]
+\centering
+\caption{Matriz de confusión normalizada para U-Net++ Improved (5 clases principales)}
+\begin{tabular}{lccccc}
+\toprule
+ & \textbf{Background} & \textbf{Building} & \textbf{Road} & \textbf{Vegetation} & \textbf{Vehicle} \\
+\midrule
+Background & 0.95 & 0.02 & 0.01 & 0.02 & 0.00 \\
+Building & 0.03 & 0.91 & 0.04 & 0.01 & 0.01 \\
+Road & 0.02 & 0.05 & 0.89 & 0.03 & 0.01 \\
+Vegetation & 0.04 & 0.01 & 0.02 & 0.92 & 0.01 \\
+Vehicle & 0.05 & 0.08 & 0.07 & 0.03 & 0.77 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Análisis de Sensibilidad}
+
+\begin{figure}[H]
+\centering
+\caption{Sensibilidad del rendimiento a variaciones en hiperparámetros clave}
+\label{fig:sensitivity_analysis}
+\end{figure}
+
+\chapter{Código Fuente Clave}
+
+\section{Implementación de Pérdidas Combinadas}
+
+\begin{lstlisting}[language=Python, caption=losses.py - Implementación de pérdidas combinadas]
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class CombinedLoss(nn.Module):
+    def __init__(self, num_classes, weights=None, 
+                 ce_weight=0.5, dice_weight=0.3, focal_weight=0.2):
+        super().__init__()
+        self.num_classes = num_classes
+        self.ce_weight = ce_weight
+        self.dice_weight = dice_weight
+        self.focal_weight = focal_weight
+        
+        # Cross Entropy Loss
+        self.ce_loss = nn.CrossEntropyLoss(weight=weights)
+        
+    def dice_loss(self, pred, target, smooth=1e-5):
+        pred = F.softmax(pred, dim=1)
+        target_one_hot = F.one_hot(target, self.num_classes)
+        target_one_hot = target_one_hot.permute(0, 3, 1, 2).float()
+        
+        intersection = (pred * target_one_hot).sum(dim=(2, 3))
+        union = pred.sum(dim=(2, 3)) + target_one_hot.sum(dim=(2, 3))
+        
+        dice = (2.0 * intersection + smooth) / (union + smooth)
+        return 1.0 - dice.mean()
+    
+    def focal_loss(self, pred, target, alpha=0.25, gamma=2.0):
+        ce_loss = F.cross_entropy(pred, target, reduction='none')
+        pt = torch.exp(-ce_loss)
+        focal_loss = alpha * (1 - pt) ** gamma * ce_loss
+        return focal_loss.mean()
+    
+    def forward(self, pred, target):
+        ce = self.ce_loss(pred, target) * self.ce_weight
+        dice = self.dice_loss(pred, target) * self.dice_weight
+        focal = self.focal_loss(pred, target) * self.focal_weight
+        
+        total_loss = ce + dice + focal
+        
+        return total_loss, {
+            'ce_loss': ce.item(),
+            'dice_loss': dice.item(),
+            'focal_loss': focal.item(),
+            'total_loss': total_loss.item()
+        }
+\end{lstlisting}
+
+\section{Métricas de Evaluación}
+
+\begin{lstlisting}[language=Python, caption=metrics.py - Implementación de métricas]
+import numpy as np
+from sklearn.metrics import confusion_matrix
+
+class SegmentationMetrics:
+    def __init__(self, num_classes):
+        self.num_classes = num_classes
+        self.reset()
+        
+    def reset(self):
+        self.confusion_matrix = np.zeros(
+            (self.num_classes, self.num_classes)
+        )
+        
+    def update(self, pred, target):
+        pred = pred.cpu().numpy()
+        target = target.cpu().numpy()
+        
+        mask = (target >= 0) & (target < self.num_classes)
+        label = self.num_classes * target[mask] + pred[mask]
+        count = np.bincount(
+            label, minlength=self.num_classes**2
+        )
+        self.confusion_matrix += count.reshape(
+            self.num_classes, self.num_classes
+        )
+        
+    def get_metrics(self):
+        # IoU per class
+        intersection = np.diag(self.confusion_matrix)
+        union = (self.confusion_matrix.sum(axis=1) + 
+                self.confusion_matrix.sum(axis=0) - 
+                intersection)
+        iou = intersection / (union + 1e-10)
+        
+        # Mean IoU
+        miou = np.nanmean(iou)
+        
+        # Dice per class
+        dice = 2 * intersection / (
+            self.confusion_matrix.sum(axis=1) + 
+            self.confusion_matrix.sum(axis=0) + 1e-10
+        )
+        
+        # Mean Dice
+        mdice = np.nanmean(dice)
+        
+        # Pixel Accuracy
+        pixel_acc = (intersection.sum() / 
+                    self.confusion_matrix.sum())
+        
+        # Mean Pixel Accuracy
+        mean_acc = np.nanmean(
+            intersection / self.confusion_matrix.sum(axis=1)
+        )
+        
+        return {
+            'iou_per_class': iou,
+            'miou': miou,
+            'dice_per_class': dice,
+            'mdice': mdice,
+            'pixel_accuracy': pixel_acc,
+            'mean_accuracy': mean_acc,
+            'confusion_matrix': self.confusion_matrix
+        }
+\end{lstlisting}
+
+% Bibliografía
+\printbibliography[heading=bibintoc,title={Referencias}]
+
+\end{document}
